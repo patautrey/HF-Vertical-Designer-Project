@@ -35,14 +35,6 @@ Plan regional and high‑angle coverage:
 
 ---
 
-🛠 Technology Stack
-
-- HTML5 — modular partial‑based layout  
-- CSS3 — custom theme engine, responsive grid, soft‑shadow UI  
-- Vanilla JavaScript — routing, module logic, HF math engine  
-- No frameworks — fast, portable, zero‑dependency  
-
----
 
 ## 📡 Roadmap
 
