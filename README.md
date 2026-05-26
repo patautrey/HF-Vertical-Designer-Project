@@ -35,34 +35,6 @@ Plan regional and high‑angle coverage:
 
 ---
 
-## 🚀 Features
-
-### Vertical Designer
-Model portable and fixed HF vertical antennas across 80m–6m:
-- Element length, mast height, loading, and feedpoint geometry
-- Electrical length, resonance estimate, feed impedance, SWR
-- Pattern tendency and deployment notes
-
-### Feedline & Matching
-Explore feedline behavior across HF:
-- Coax and ladder line loss estimation
-- Impedance transformation
-- SWR at load vs. SWR at rig
-- First‑order matching insights
-
-### DX & Patterns
-Evaluate DX‑oriented operating scenarios:
-- Takeoff angle tendencies
-- Band suitability
-- Antenna type and height effects
-- Pattern behavior summaries
-
-### NVIS & Field Ops
-Plan regional and high‑angle coverage:
-- Low dipoles, inverted‑V, and field antennas
-- Height‑to‑wavelength NVIS suitability
-- Ground quality and deployment context effects
-
 🛠 Technology Stack
 
 - HTML5 — modular partial‑based layout  
