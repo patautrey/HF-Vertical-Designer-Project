@@ -1,0 +1,46 @@
+<div id="doublet-designer-view" class="view" style="display:none;">
+<h2>Doublet Designer</h2>
+<label for="doubletPreset">Doublet Type</label>
+<select id="doubletPreset">
+<option value="custom">Custom Doublet</option>
+<option value="g5rv">G5RV</option>
+<option value="zs6bkw">ZS6BKW</option>
+<option value="20m">20m Doublet</option>
+<option value="40m">40m Doublet</option>
+<option value="80m">80m Doublet</option>
+</select>
+<label for="doubletWireLength">Wire Length (ft)</label>
+<input type="number" id="doubletWireLength">
+<label for="doubletLadderLength">Ladder Line Length (ft)</label>
+<div>
+<input type="number" id="doubletLadderLength">
+<button id="doubletLadderLock" title="Lock/unlock preset ladder-line length">🔒</button>
+</div>
+<label for="doubletLadderZ">Ladder Line Impedance</label>
+<select id="doubletLadderZ">
+<option value="300">300 Ω</option>
+<option value="450" selected>450 Ω</option>
+<option value="600">600 Ω</option>
+</select>
+<label for="doubletBalun">Balun Type</label>
+<select id="doubletBalun">
+<option value="1to1">1:1 Current Balun</option>
+<option value="4to1">4:1 Current Balun</option>
+</select>
+<label for="doubletHeight">Feedpoint Height (ft)</label>
+<input type="number" id="doubletHeight">
+<label for="doubletBands">Bands</label>
+<select id="doubletBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+<button id="doubletAnalyze">Analyze Doublet</button>
+<div id="doubletResults"></div>
+<div id="doubletWarnings"></div>
+</div>
