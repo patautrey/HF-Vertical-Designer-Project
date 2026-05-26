@@ -35,16 +35,6 @@ Plan regional and high‑angle coverage:
 
 ---
 
-## 🧩 Architecture
-
-The suite is built as a modular single‑page application:
-# HF Vertical Designer Suite
-
-A browser‑based engineering toolkit for HF antenna planning, feedline analysis, and field‑ready deployment workflows.  
-Designed for clarity, speed, and portability — runs entirely in the browser with no backend required.
-
----
-
 ## 🚀 Features
 
 ### Vertical Designer
@@ -73,8 +63,28 @@ Plan regional and high‑angle coverage:
 - Height‑to‑wavelength NVIS suitability
 - Ground quality and deployment context effects
 
+🛠 Technology Stack
+
+- HTML5 — modular partial‑based layout  
+- CSS3 — custom theme engine, responsive grid, soft‑shadow UI  
+- Vanilla JavaScript — routing, module logic, HF math engine  
+- No frameworks — fast, portable, zero‑dependency  
+
 ---
 
-## 🧩 Architecture
+## 📡 Roadmap
 
-The suite is built as a modular single‑page application:
+- Frequency‑sweep plots  
+- Smith chart visualization  
+- Pattern sketches and elevation plots  
+- Time‑of‑day and seasonal NVIS modeling  
+- Exportable configuration sheets  
+- Mobile‑optimized field‑deployment mode  
+
+## 👤 Author
+
+Created by Pat Autrey (KG5IEF)  
+Fort Worth, Texas  
+HF experimentation, NVIS research, and portable field ops enthusiast.
+
+
