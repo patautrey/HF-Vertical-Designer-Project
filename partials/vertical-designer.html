@@ -1,2 +1,79 @@
-<div class="page-header"><h1>Vertical Designer</h1><p>Configure a vertical antenna, visualize geometry, and prepare for field deployment.</p></div><div class="grid grid-2"><div class="card"><h2>Antenna Geometry</h2><form id="vertical-geometry-form" class="form-grid"><label class="form-field"><span>Element length (ft)</span><input type="number" id="el-length-ft" value="25" min="1" step="0.1"></label><label class="form-field"><span>Mast height (ft)</span><input type="number" id="mast-height-ft" value="33" min="1" step="0.1"></label><label class="form-field"><span>Operating band</span><select id="band-select"><option value="3.5">80 m (3.5 MHz)</option><option value="7">40 m (7 MHz)</option><option value="10.1">30 m (10.1 MHz)</option><option value="14" selected>20 m (14 MHz)</option><option value="18.1">17 m (18.1 MHz)</option><option value="21">15 m (21 MHz)</option><option value="24.9">12 m (24.9 MHz)</option><option value="28">10 m (28 MHz)</option><option value="50">6 m (50 MHz)</option></select></label><label class="form-field"><span>Ground system</span><select id="ground-system"><option value="minimal">Minimal radials</option><option value="field">Field radial kit</option><option value="dense">Dense radial field</option></select></label><label class="form-field"><span>Loading / top hat</span><select id="loading-mode"><option value="none">None (full-size)</option><option value="base">Base loading</option><option value="mid">Mid-element loading</option><option value="top">Top loading</option></select></label><label class="form-field"><span>Feedpoint height (ft)</span><input type="number" id="feedpoint-height-ft" value="1" min="0" step="0.1"></label><button type="button" id="btn-run-vertical" class="btn btn-primary form-full">Evaluate vertical</button></form></div><div class="card"><h2>Quick Summary</h2><div id="vertical-summary" class="summary-panel"><p class="summary-line"><span class="summary-label">Electrical length:</span><span id="summary-elec-length">–</span></p><p class="summary-line"><span class="summary-label">Approx. resonance:</span><span id="summary-resonance">–</span></p><p class="summary-line"><span class="summary-label">Estimated feed Z:</span><span id="summary-feedz">–</span></p><p class="summary-line"><span class="summary-label">Expected SWR (50 Ω):</span><span id="summary-swr">–</span></p><p class="summary-line"><span class="summary-label">Radiation focus:</span><span id="summary-pattern">–</span></p></div><div class="card-subsection"><h3>Notes</h3><ul class="notes-list"><li>Results are first-order estimates for planning and comparison.</li><li>Field measurements and on-air tests should always validate final configurations.</li><li>Future versions will add band-by-band plots and pattern visuals.</li></ul></div></div></div>
+<div id="vertical-designer-view" class="view" style="display:none;">
+<h2>Vertical Designer</h2>
 
+<!-- Mode Selector -->
+<label for="vdMode">Mode</label>
+<select id="vdMode">
+<option value="single">Single-Band Mode</option>
+<option value="multi">Multi-Band Mode</option>
+</select>
+
+<!-- Band Selector -->
+<label for="vdBands">Bands</label>
+<select id="vdBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="30">30m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+
+<!-- Antenna Type -->
+<label for="vdType">Antenna Type</label>
+<select id="vdType">
+<option value="quarter">1/4‑Wave Vertical</option>
+<option value="half">1/2‑Wave Vertical</option>
+<option value="fiveEighths">5/8‑Wave Vertical</option>
+<option value="sixFour">0.64‑Wave Vertical</option>
+<option value="sevenZero">0.70‑Wave DX Turbo</option>
+<option value="threeQuarter">3/4‑Wave Vertical</option>
+<option value="custom">Custom Electrical Length</option>
+<option value="loaded">Loaded Vertical</option>
+<option value="trap">Trap Vertical</option>
+<option value="fan">Fan Vertical</option>
+<option value="efhw">EFHW Vertical</option>
+</select>
+
+<!-- Custom Electrical Length -->
+<div id="vdCustomBlock" style="display:none;">
+<label for="vdCustomLength">Electrical Length (λ)</label>
+<input type="number" id="vdCustomLength" step="0.01" placeholder="e.g., 0.55">
+</div>
+
+<!-- Height -->
+<label for="vdHeight">Height Above Ground (ft)</label>
+<input type="number" id="vdHeight">
+
+<!-- Ground Model -->
+<label for="vdGround">Ground Quality</label>
+<select id="vdGround">
+<option value="poor">Poor Ground</option>
+<option value="average" selected>Average Ground</option>
+<option value="good">Good Ground</option>
+</select>
+
+<!-- Radials -->
+<label for="vdRadialCount">Number of Radials</label>
+<input type="number" id="vdRadialCount" value="16">
+
+<label for="vdRadialLength">Radial Length (ft)</label>
+<input type="number" id="vdRadialLength">
+
+<label for="vdRadialType">Radial Type</label>
+<select id="vdRadialType">
+<option value="ground">Ground-Mounted</option>
+<option value="elevated">Elevated</option>
+</select>
+
+<!-- Analyze Button -->
+<button id="vdAnalyze">Analyze Vertical</button>
+
+<!-- Results -->
+<div id="vdResults"></div>
+<div id="vdWarnings"></div>
+
+</div>
