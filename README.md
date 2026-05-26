@@ -1,50 +1,80 @@
 # HF Vertical Designer Suite
-- **index.html** loads the shell and view containers  
-- **partials/** contains each module’s UI  
-- **utils.js** provides HF math helpers  
-- **app.js** handles routing, theme control, sidebar behavior, and module initialization  
-- **style.css** defines the full theme system and UI framework  
+
+A browser‑based engineering toolkit for HF antenna planning, feedline analysis, and field‑ready deployment workflows.  
+Designed for clarity, speed, and portability — runs entirely in the browser with no backend required.
 
 ---
 
-## 🎨 Theme System
+## 🚀 Features
 
-The suite supports:
-- Light mode  
-- Dark mode  
-- Auto mode (follows system preference)
+### Vertical Designer
+Model portable and fixed HF vertical antennas across 80m–6m:
+- Element length, mast height, loading, and feedpoint geometry
+- Electrical length, resonance estimate, feed impedance, SWR
+- Pattern tendency and deployment notes
 
-Theme state is stored locally and persists across sessions.
+### Feedline & Matching
+Explore feedline behavior across HF:
+- Coax and ladder line loss estimation
+- Impedance transformation
+- SWR at load vs. SWR at rig
+- First‑order matching insights
 
----
+### DX & Patterns
+Evaluate DX‑oriented operating scenarios:
+- Takeoff angle tendencies
+- Band suitability
+- Antenna type and height effects
+- Pattern behavior summaries
 
-## 📦 Installation
-
-No build tools. No dependencies.  
-Just clone and open:
-
-
-- **index.html** loads the shell and view containers  
-- **partials/** contains each module’s UI  
-- **utils.js** provides HF math helpers  
-- **app.js** handles routing, theme control, sidebar behavior, and module initialization  
-- **style.css** defines the full theme system and UI framework  
-
----
-
-## 🎨 Theme System
-
-The suite supports:
-- Light mode  
-- Dark mode  
-- Auto mode (follows system preference)
-
-Theme state is stored locally and persists across sessions.
+### NVIS & Field Ops
+Plan regional and high‑angle coverage:
+- Low dipoles, inverted‑V, and field antennas
+- Height‑to‑wavelength NVIS suitability
+- Ground quality and deployment context effects
 
 ---
 
-## 📦 Installation
+## 🧩 Architecture
 
-No build tools. No dependencies.  
-Just clone and open:
+The suite is built as a modular single‑page application:
+# HF Vertical Designer Suite
 
+A browser‑based engineering toolkit for HF antenna planning, feedline analysis, and field‑ready deployment workflows.  
+Designed for clarity, speed, and portability — runs entirely in the browser with no backend required.
+
+---
+
+## 🚀 Features
+
+### Vertical Designer
+Model portable and fixed HF vertical antennas across 80m–6m:
+- Element length, mast height, loading, and feedpoint geometry
+- Electrical length, resonance estimate, feed impedance, SWR
+- Pattern tendency and deployment notes
+
+### Feedline & Matching
+Explore feedline behavior across HF:
+- Coax and ladder line loss estimation
+- Impedance transformation
+- SWR at load vs. SWR at rig
+- First‑order matching insights
+
+### DX & Patterns
+Evaluate DX‑oriented operating scenarios:
+- Takeoff angle tendencies
+- Band suitability
+- Antenna type and height effects
+- Pattern behavior summaries
+
+### NVIS & Field Ops
+Plan regional and high‑angle coverage:
+- Low dipoles, inverted‑V, and field antennas
+- Height‑to‑wavelength NVIS suitability
+- Ground quality and deployment context effects
+
+---
+
+## 🧩 Architecture
+
+The suite is built as a modular single‑page application:
