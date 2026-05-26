@@ -1,0 +1,38 @@
+<div id="random-wire-view" class="view" style="display:none;">
+<h2>Random‑Wire + 9:1 Designer</h2>
+<label>
+<input type="checkbox" id="rwFieldMode">
+Field Mode (29 / 41 / 58 ft only)
+</label>
+<label for="rwLengthSelect">Wire Length (ft)</label>
+<select id="rwLengthSelect">
+<option value="29">29 ft — Safe (40–10m)</option>
+<option value="35.5">35.5 ft — Safe (40–10m)</option>
+<option value="41">41 ft — Safe (40–10m)</option>
+<option value="58">58 ft — Safe (80–10m)</option>
+<option value="71">71 ft — Safe (80–10m)</option>
+<option value="84">84 ft — Safe (80–10m)</option>
+<option value="107">107 ft — Safe (80–10m)</option>
+<option value="124">124 ft — Safe (80–10m)</option>
+<option value="custom">Custom Length…</option>
+</select>
+<div id="rwCustomLengthContainer" style="display:none;">
+<input type="number" id="rwCustomLength" placeholder="Enter wire length (ft)">
+</div>
+<label for="rwBands">Target Bands</label>
+<select id="rwBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="30">30m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+<button id="rwRecommend">Recommended Length</button>
+<button id="rwAnalyze">Analyze Random Wire</button>
+<div id="rwResults"></div>
+<div id="rwWarnings"></div>
+</div>
