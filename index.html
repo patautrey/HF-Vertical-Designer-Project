@@ -3,66 +3,322 @@
 <head>
 <meta charset="UTF-8">
 <title>HF Vertical Designer Project</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 <div id="app">
-<div id="sidebar-container">
-<!-- Sidebar partial -->
-<div id="sidebar-wrapper">
-<!-- sidebar.html will be inlined or loaded server-side -->
-<nav id="sidebar">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
 <ul class="nav flex-column">
-<li class="nav-item">
-<a href="#" class="nav-link" data-view="vertical-designer">Vertical Designer</a>
-</li>
-<li class="nav-item">
-<a href="#" class="nav-link" data-view="feedline-matching">Feedline &amp; Matching</a>
-</li>
-<li class="nav-item">
-<a href="#" class="nav-link" data-view="dx-patterns">DX &amp; Patterns</a>
-</li>
-<li class="nav-item">
-<a href="#" class="nav-link" data-view="nvis-field">NVIS &amp; Field Ops</a>
-</li>
-<li class="nav-item">
-<a href="#" class="nav-link" data-view="doublet-designer">Doublet Designer</a>
-</li>
-<li class="nav-item">
-<a href="#" class="nav-link" data-view="random-wire">Random‑Wire + 9:1</a>
-</li>
+<li class="nav-item"><a href="#" class="nav-link" data-view="vertical-designer">Vertical Designer</a></li>
+<li class="nav-item"><a href="#" class="nav-link" data-view="feedline-matching">Feedline &amp; Matching</a></li>
+<li class="nav-item"><a href="#" class="nav-link" data-view="dx-patterns">DX &amp; Patterns</a></li>
+<li class="nav-item"><a href="#" class="nav-link" data-view="nvis-field">NVIS &amp; Field Ops</a></li>
+<li class="nav-item"><a href="#" class="nav-link" data-view="doublet-designer">Doublet Designer</a></li>
+<li class="nav-item"><a href="#" class="nav-link" data-view="random-wire">Random‑Wire + 9:1</a></li>
 </ul>
-</nav>
 </div>
-</div>
-<div id="main-container">
-<div id="views">
+
+<!-- MAIN VIEW CONTAINER -->
+<div id="main">
+
+<!-- Vertical Designer (existing content placeholder) -->
 <div id="vertical-designer-view" class="view">
-<!-- existing vertical designer content/partial goes here -->
+<h2>Vertical Designer</h2>
+<p>This is your existing Vertical Designer module. Your original content remains here.</p>
 </div>
+
+<!-- Feedline & Matching (existing content placeholder) -->
 <div id="feedline-matching-view" class="view" style="display:none;">
-<!-- existing feedline & matching content/partial goes here -->
+<h2>Feedline & Matching</h2>
+<p>Your existing feedline/matching module content goes here.</p>
 </div>
+
+<!-- DX Patterns -->
 <div id="dx-patterns-view" class="view" style="display:none;">
-<!-- existing DX & patterns content/partial goes here -->
+<!-- FULL CONTENT FROM dx-patterns.html -->
+<h2>DX & Patterns</h2>
+
+<label for="dxAntennaType">Antenna Type</label>
+<select id="dxAntennaType">
+<option value="vertical">Vertical (1/4λ, 1/2λ, Loaded)</option>
+<option value="dipole">Dipole</option>
+<option value="invV">Inverted‑V</option>
+<option value="ocf">OCF Dipole</option>
+<option value="doublet">Center‑Fed Doublet</option>
+<option value="loop">Full‑Wave Horizontal Loop</option>
+<option value="efhw">End‑Fed Half‑Wave (EFHW)</option>
+<option value="random">Random‑Wire</option>
+</select>
+
+<div id="dxWireLengthBlock">
+<label for="dxWireLength">Wire Length (ft)</label>
+<input type="number" id="dxWireLength">
 </div>
+
+<div id="dxLegLengthBlock" style="display:none;">
+<label for="dxLegLength">Leg Length (ft)</label>
+<input type="number" id="dxLegLength">
+</div>
+
+<div id="dxOffsetBlock" style="display:none;">
+<label for="dxOffset">OCF Offset (%)</label>
+<input type="number" id="dxOffset" value="33">
+</div>
+
+<div id="dxLoopBlock" style="display:none;">
+<label for="dxLoopShape">Loop Shape</label>
+<select id="dxLoopShape">
+<option value="square">Square Loop</option>
+<option value="delta">Delta Loop</option>
+<option value="rectangle">Rectangle Loop</option>
+</select>
+
+<label for="dxLoopCirc">Loop Circumference (ft)</label>
+<input type="number" id="dxLoopCirc">
+</div>
+
+<div id="dxRandomBlock" style="display:none;">
+<label for="dxRandomLength">Random‑Wire Length (ft)</label>
+<select id="dxRandomLength">
+<option value="29">29 ft</option>
+<option value="35.5">35.5 ft</option>
+<option value="41">41 ft</option>
+<option value="58">58 ft</option>
+<option value="71">71 ft</option>
+<option value="84">84 ft</option>
+<option value="107">107 ft</option>
+<option value="124">124 ft</option>
+<option value="custom">Custom Length…</option>
+</select>
+<div id="dxRandomCustom" style="display:none;">
+<input type="number" id="dxRandomCustomLength" placeholder="Enter wire length (ft)">
+</div>
+</div>
+
+<label for="dxHeight">Height Above Ground (ft)</label>
+<input type="number" id="dxHeight">
+
+<label for="dxBands">Bands</label>
+<select id="dxBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="30">30m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+
+<button id="dxAnalyze">Analyze Pattern</button>
+
+<div id="dxResults"></div>
+<div id="dxWarnings"></div>
+</div>
+
+<!-- NVIS Field Ops -->
 <div id="nvis-field-view" class="view" style="display:none;">
-<!-- existing NVIS & field ops content/partial goes here -->
+<!-- FULL CONTENT FROM nvis-field.html -->
+<h2>NVIS & Field Ops</h2>
+
+<label for="nvisAntennaType">Antenna Type</label>
+<select id="nvisAntennaType">
+<option value="dipole">Dipole</option>
+<option value="invV">Inverted‑V</option>
+<option value="ocf">OCF Dipole</option>
+<option value="doublet">Center‑Fed Doublet</option>
+<option value="loop">Full‑Wave Horizontal Loop (4:1)</option>
+<option value="random">Random‑Wire (NVIS Mode)</option>
+<option value="efhw">End‑Fed Half‑Wave (EFHW)</option>
+</select>
+
+<div id="nvisWireLengthBlock">
+<label for="nvisWireLength">Wire Length (ft)</label>
+<input type="number" id="nvisWireLength">
 </div>
-<!-- new doublet designer view -->
+
+<div id="nvisLegLengthBlock" style="display:none;">
+<label for="nvisLegLength">Leg Length (ft)</label>
+<input type="number" id="nvisLegLength">
+</div>
+
+<div id="nvisOffsetBlock" style="display:none;">
+<label for="nvisOffset">OCF Offset (%)</label>
+<input type="number" id="nvisOffset" value="33">
+</div>
+
+<div id="nvisLoopBlock" style="display:none;">
+<label for="nvisLoopShape">Loop Shape</label>
+<select id="nvisLoopShape">
+<option value="square">Square Loop</option>
+<option value="delta">Delta Loop</option>
+<option value="rectangle">Rectangle Loop</option>
+</select>
+
+<label for="nvisLoopCirc">Loop Circumference (ft)</label>
+<input type="number" id="nvisLoopCirc">
+</div>
+
+<div id="nvisRandomBlock" style="display:none;">
+<label for="nvisRandomLength">Random‑Wire Length (ft)</label>
+<select id="nvisRandomLength">
+<option value="29">29 ft — NVIS Safe</option>
+<option value="41">41 ft — NVIS Safe</option>
+<option value="58">58 ft — NVIS Safe</option>
+<option value="custom">Custom Length…</option>
+</select>
+<div id="nvisRandomCustom" style="display:none;">
+<input type="number" id="nvisRandomCustomLength" placeholder="Enter wire length (ft)">
+</div>
+</div>
+
+<label for="nvisHeight">Height Above Ground (ft)</label>
+<input type="number" id="nvisHeight">
+
+<label for="nvisGround">Ground Quality</label>
+<select id="nvisGround">
+<option value="poor">Poor Ground</option>
+<option value="average" selected>Average Ground</option>
+<option value="good">Good Ground</option>
+</select>
+
+<label for="nvisBands">Bands</label>
+<select id="nvisBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="30">30m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+
+<button id="nvisAnalyze">Analyze NVIS</button>
+
+<div id="nvisResults"></div>
+<div id="nvisWarnings"></div>
+</div>
+
+<!-- Doublet Designer -->
 <div id="doublet-designer-view" class="view" style="display:none;">
-<!-- doublet-designer.html content will be inlined or included -->
+<!-- FULL CONTENT FROM doublet-designer.html -->
+<h2>Doublet Designer</h2>
+
+<label for="doubletPreset">Doublet Type</label>
+<select id="doubletPreset">
+<option value="custom">Custom Doublet</option>
+<option value="g5rv">G5RV</option>
+<option value="zs6bkw">ZS6BKW</option>
+<option value="20m">20m Doublet</option>
+<option value="40m">40m Doublet</option>
+<option value="80m">80m Doublet</option>
+</select>
+
+<label for="doubletWireLength">Wire Length (ft)</label>
+<input type="number" id="doubletWireLength">
+
+<label for="doubletLadderLength">Ladder Line Length (ft)</label>
+<div>
+<input type="number" id="doubletLadderLength">
+<button id="doubletLadderLock">🔒</button>
 </div>
-<!-- new random-wire view -->
+
+<label for="doubletLadderZ">Ladder Line Impedance</label>
+<select id="doubletLadderZ">
+<option value="300">300 Ω</option>
+<option value="450" selected>450 Ω</option>
+<option value="600">600 Ω</option>
+</select>
+
+<label for="doubletBalun">Balun Type</label>
+<select id="doubletBalun">
+<option value="1to1">1:1 Current Balun</option>
+<option value="4to1">4:1 Current Balun</option>
+</select>
+
+<label for="doubletHeight">Feedpoint Height (ft)</label>
+<input type="number" id="doubletHeight">
+
+<label for="doubletBands">Bands</label>
+<select id="doubletBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+
+<button id="doubletAnalyze">Analyze Doublet</button>
+
+<div id="doubletResults"></div>
+<div id="doubletWarnings"></div>
+</div>
+
+<!-- Random-Wire + 9:1 -->
 <div id="random-wire-view" class="view" style="display:none;">
-<!-- random-wire.html content will be inlined or included -->
+<!-- FULL CONTENT FROM random-wire.html -->
+<h2>Random‑Wire + 9:1 Designer</h2>
+
+<label>
+<input type="checkbox" id="rwFieldMode">
+Field Mode (29 / 41 / 58 ft only)
+</label>
+
+<label for="rwLengthSelect">Wire Length (ft)</label>
+<select id="rwLengthSelect">
+<option value="29">29 ft — Safe (40–10m)</option>
+<option value="35.5">35.5 ft — Safe (40–10m)</option>
+<option value="41">41 ft — Safe (40–10m)</option>
+<option value="58">58 ft — Safe (80–10m)</option>
+<option value="71">71 ft — Safe (80–10m)</option>
+<option value="84">84 ft — Safe (80–10m)</option>
+<option value="107">107 ft — Safe (80–10m)</option>
+<option value="124">124 ft — Safe (80–10m)</option>
+<option value="custom">Custom Length…</option>
+</select>
+
+<div id="rwCustomLengthContainer" style="display:none;">
+<input type="number" id="rwCustomLength" placeholder="Enter wire length (ft)">
 </div>
+
+<label for="rwBands">Target Bands</label>
+<select id="rwBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="30">30m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+
+<button id="rwRecommend">Recommended Length</button>
+<button id="rwAnalyze">Analyze Random Wire</button>
+
+<div id="rwResults"></div>
+<div id="rwWarnings"></div>
 </div>
-</div>
-</div>
+
+</div> <!-- end main -->
+</div> <!-- end app -->
+
+<!-- JS -->
+<script src="js/utils.js"></script>
 <script src="js/app.js"></script>
 <script src="js/doublet-designer.js"></script>
 <script src="js/random-wire.js"></script>
+
 </body>
 </html>
