@@ -1,1 +1,88 @@
-<div class="page-header"><h1>DX & Patterns</h1><p>Estimate takeoff angles, band suitability, and pattern tendencies for DX-oriented operation.</p></div><div class="grid grid-2"><div class="card"><h2>Operating Scenario</h2><form id="dx-form" class="form-grid"><label class="form-field"><span>Band</span><select id="dx-band"><option value="3.5">80 m</option><option value="7">40 m</option><option value="10.1">30 m</option><option value="14" selected>20 m</option><option value="18.1">17 m</option><option value="21">15 m</option><option value="24.9">12 m</option><option value="28">10 m</option></select></label><label class="form-field"><span>Antenna type</span><select id="dx-antenna-type"><option value="vertical">Ground-mounted vertical</option><option value="elevated-vertical">Elevated vertical</option><option value="low-dipole">Low dipole</option><option value="high-dipole">High dipole</option></select></label><label class="form-field"><span>Antenna height (ft)</span><input type="number" id="dx-height-ft" value="33" min="1" step="0.5"></label><label class="form-field"><span>Target distance</span><select id="dx-distance"><option value="regional">Regional (0–800 km)</option><option value="intermediate">Intermediate (800–3000 km)</option><option value="dx" selected>DX (3000+ km)</option></select></label><button type="button" id="btn-eval-dx" class="btn btn-primary form-full">Evaluate DX profile</button></form></div><div class="card"><h2>DX Profile Summary</h2><div class="summary-panel"><p class="summary-line"><span class="summary-label">Likely takeoff angle:</span><span id="dx-takeoff">–</span></p><p class="summary-line"><span class="summary-label">DX suitability:</span><span id="dx-suitability">–</span></p><p class="summary-line"><span class="summary-label">Pattern tendency:</span><span id="dx-pattern">–</span></p><p class="summary-line"><span class="summary-label">Band comment:</span><span id="dx-band-comment">–</span></p></div><div class="card-subsection"><h3>Notes</h3><ul class="notes-list"><li>Outputs are qualitative helpers, not propagation predictions.</li><li>Combine with real-time MUF/foF2 data and on-air reports.</li><li>Future versions may add pattern sketches and VOACAP-style overlays.</li></ul></div></div></div>
+<div id="dx-patterns-view" class="view" style="display:none;">
+<h2>DX & Patterns</h2>
+
+<label for="dxAntennaType">Antenna Type</label>
+<select id="dxAntennaType">
+<option value="vertical">Vertical (1/4λ, 1/2λ, Loaded)</option>
+<option value="dipole">Dipole</option>
+<option value="invV">Inverted‑V</option>
+<option value="ocf">OCF Dipole</option>
+<option value="doublet">Center‑Fed Doublet</option>
+<option value="loop">Full‑Wave Horizontal Loop</option>
+<option value="efhw">End‑Fed Half‑Wave (EFHW)</option>
+<option value="random">Random‑Wire</option>
+</select>
+
+<!-- Wire length -->
+<div id="dxWireLengthBlock">
+<label for="dxWireLength">Wire Length (ft)</label>
+<input type="number" id="dxWireLength">
+</div>
+
+<!-- Inverted‑V leg length -->
+<div id="dxLegLengthBlock" style="display:none;">
+<label for="dxLegLength">Leg Length (ft)</label>
+<input type="number" id="dxLegLength">
+</div>
+
+<!-- OCF offset -->
+<div id="dxOffsetBlock" style="display:none;">
+<label for="dxOffset">OCF Offset (%)</label>
+<input type="number" id="dxOffset" value="33">
+</div>
+
+<!-- Loop shape + circumference -->
+<div id="dxLoopBlock" style="display:none;">
+<label for="dxLoopShape">Loop Shape</label>
+<select id="dxLoopShape">
+<option value="square">Square Loop</option>
+<option value="delta">Delta Loop</option>
+<option value="rectangle">Rectangle Loop</option>
+</select>
+
+<label for="dxLoopCirc">Loop Circumference (ft)</label>
+<input type="number" id="dxLoopCirc">
+</div>
+
+<!-- Random‑wire -->
+<div id="dxRandomBlock" style="display:none;">
+<label for="dxRandomLength">Random‑Wire Length (ft)</label>
+<select id="dxRandomLength">
+<option value="29">29 ft</option>
+<option value="35.5">35.5 ft</option>
+<option value="41">41 ft</option>
+<option value="58">58 ft</option>
+<option value="71">71 ft</option>
+<option value="84">84 ft</option>
+<option value="107">107 ft</option>
+<option value="124">124 ft</option>
+<option value="custom">Custom Length…</option>
+</select>
+<div id="dxRandomCustom" style="display:none;">
+<input type="number" id="dxRandomCustomLength" placeholder="Enter wire length (ft)">
+</div>
+</div>
+
+<!-- Height -->
+<label for="dxHeight">Height Above Ground (ft)</label>
+<input type="number" id="dxHeight">
+
+<!-- Bands -->
+<label for="dxBands">Bands</label>
+<select id="dxBands" multiple>
+<option value="80">80m</option>
+<option value="60">60m</option>
+<option value="40">40m</option>
+<option value="30">30m</option>
+<option value="20">20m</option>
+<option value="17">17m</option>
+<option value="15">15m</option>
+<option value="12">12m</option>
+<option value="10">10m</option>
+</select>
+
+<button id="dxAnalyze">Analyze Pattern</button>
+
+<div id="dxResults"></div>
+<div id="dxWarnings"></div>
+</div>
