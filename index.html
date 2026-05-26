@@ -1,1 +1,68 @@
-<!DOCTYPE html><html lang="en" data-theme="auto"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>HF Vertical Designer Project</title><link rel="stylesheet" href="assets/css/style.css"></head><body><div id="app" class="app-shell"><header id="app-navbar"></header><div class="app-body"><aside id="app-sidebar" class="app-sidebar"></aside><main id="app-main" class="app-main"><section id="view-dashboard" class="app-view app-view-active"></section><section id="view-vertical-designer" class="app-view"></section><section id="view-feedline-matching" class="app-view"></section><section id="view-dx-patterns" class="app-view"></section><section id="view-nvis-field" class="app-view"></section></main></div></div><script src="assets/js/utils.js"></script><script src="assets/js/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HF Vertical Designer Project</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+<div id="sidebar-container">
+<!-- Sidebar partial -->
+<div id="sidebar-wrapper">
+<!-- sidebar.html will be inlined or loaded server-side -->
+<nav id="sidebar">
+<ul class="nav flex-column">
+<li class="nav-item">
+<a href="#" class="nav-link" data-view="vertical-designer">Vertical Designer</a>
+</li>
+<li class="nav-item">
+<a href="#" class="nav-link" data-view="feedline-matching">Feedline &amp; Matching</a>
+</li>
+<li class="nav-item">
+<a href="#" class="nav-link" data-view="dx-patterns">DX &amp; Patterns</a>
+</li>
+<li class="nav-item">
+<a href="#" class="nav-link" data-view="nvis-field">NVIS &amp; Field Ops</a>
+</li>
+<li class="nav-item">
+<a href="#" class="nav-link" data-view="doublet-designer">Doublet Designer</a>
+</li>
+<li class="nav-item">
+<a href="#" class="nav-link" data-view="random-wire">Random‑Wire + 9:1</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+<div id="main-container">
+<div id="views">
+<div id="vertical-designer-view" class="view">
+<!-- existing vertical designer content/partial goes here -->
+</div>
+<div id="feedline-matching-view" class="view" style="display:none;">
+<!-- existing feedline & matching content/partial goes here -->
+</div>
+<div id="dx-patterns-view" class="view" style="display:none;">
+<!-- existing DX & patterns content/partial goes here -->
+</div>
+<div id="nvis-field-view" class="view" style="display:none;">
+<!-- existing NVIS & field ops content/partial goes here -->
+</div>
+<!-- new doublet designer view -->
+<div id="doublet-designer-view" class="view" style="display:none;">
+<!-- doublet-designer.html content will be inlined or included -->
+</div>
+<!-- new random-wire view -->
+<div id="random-wire-view" class="view" style="display:none;">
+<!-- random-wire.html content will be inlined or included -->
+</div>
+</div>
+</div>
+</div>
+<script src="js/app.js"></script>
+<script src="js/doublet-designer.js"></script>
+<script src="js/random-wire.js"></script>
+</body>
+</html>
