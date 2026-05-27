@@ -1,46 +1,65 @@
-<div id="dx-patterns-view" class="view" style="display:none;">
-<h2>DX & Patterns</h2>
+<!-- ============================================================
+     DX Patterns — Partial View
+     ============================================================ -->
 
-<!-- Frequency -->
-<label for="dxFreq">Frequency (MHz)</label>
-<input type="number" id="dxFreq" value="14.2">
+<section class="tool-header">
+    <h2>DX Pattern Explorer</h2>
+    <p>Analyze takeoff angles, lobe formation, and DX potential.</p>
+</section>
 
-<!-- Antenna Height -->
-<label for="dxHeight">Antenna Height (ft)</label>
-<input type="number" id="dxHeight" value="33">
+<section class="tool-body">
 
-<!-- Antenna Type -->
-<label for="dxAntennaType">Antenna Type</label>
-<select id="dxAntennaType">
-<option value="vertical">Vertical</option>
-<option value="dipole">Dipole</option>
-<option value="invertedV">Inverted‑V</option>
-<option value="efhw">EFHW</option>
-<option value="loop">Loop</option>
-<option value="yagi">Yagi</option>
-</select>
+    <!-- INPUT PANEL -->
+    <div class="input-panel">
 
-<!-- Ground Quality -->
-<label for="dxGround">Ground Quality</label>
-<select id="dxGround">
-<option value="poor">Poor</option>
-<option value="average" selected>Average</option>
-<option value="good">Good</option>
-</select>
+        <div class="input-row">
+            <label for="dxFreq">Frequency (MHz):</label>
+            <input type="number" id="dxFreq" placeholder="e.g., 14.2">
+        </div>
 
-<!-- Pattern Mode -->
-<label for="dxMode">Pattern Mode</label>
-<select id="dxMode">
-<option value="elevation">Elevation Pattern</option>
-<option value="azimuth">Azimuth Pattern</option>
-<option value="dxScore">DX Score</option>
-</select>
+        <div class="input-row">
+            <label for="dxHeight">Antenna Height (ft):</label>
+            <input type="number" id="dxHeight" placeholder="e.g., 33">
+        </div>
 
-<!-- Analyze Button -->
-<button id="dxAnalyze">Analyze Pattern</button>
+        <div class="input-row">
+            <label for="dxLength">Antenna Length (ft):</label>
+            <input type="number" id="dxLength" placeholder="e.g., 66">
+        </div>
 
-<!-- Results -->
-<div id="dxResults"></div>
-<div id="dxWarnings"></div>
+        <button id="dxCalc" class="calc-btn">Analyze</button>
+    </div>
 
-</div>
+    <!-- OUTPUT PANEL -->
+    <div class="output-panel">
+
+        <h3>Results</h3>
+
+        <div class="result-row">
+            <label>Wavelength:</label>
+            <span id="dxWavelength">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Height / Wavelength Ratio:</label>
+            <span id="dxRatio">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Primary Takeoff Angle:</label>
+            <span id="dxAngle">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Lobe Classification:</label>
+            <span id="dxClass">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>DX Potential:</label>
+            <span id="dxPotential">—</span>
+        </div>
+
+    </div>
+
+</section>
