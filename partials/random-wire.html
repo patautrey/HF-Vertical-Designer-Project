@@ -1,53 +1,50 @@
-<div id="random-wire-view" class="view" style="display:none;">
-<h2>Random‑Wire + 9:1</h2>
+<!-- ============================================================
+     Random Wire Analyzer — Partial View
+     ============================================================ -->
 
-<!-- Wire Length -->
-<label for="rwLength">Wire Length (ft)</label>
-<input type="number" id="rwLength" value="29">
+<section class="tool-header">
+    <h2>Random Wire Analyzer</h2>
+    <p>Evaluate random-wire lengths, avoid-lengths, and band coverage.</p>
+</section>
 
-<!-- Transformer Type -->
-<label for="rwTransformer">Transformer</label>
-<select id="rwTransformer">
-<option value="9to1">9:1 Unun</option>
-<option value="4to1">4:1 Balun</option>
-<option value="1to1">1:1 Current Balun</option>
-</select>
+<section class="tool-body">
 
-<!-- Counterpoise Length -->
-<label for="rwCounterpoise">Counterpoise Length (ft)</label>
-<input type="number" id="rwCounterpoise" value="17">
+    <!-- INPUT PANEL -->
+    <div class="input-panel">
 
-<!-- Height -->
-<label for="rwHeight">Antenna Height (ft)</label>
-<input type="number" id="rwHeight" value="25">
+        <div class="input-row">
+            <label for="rwLength">Wire Length (ft):</label>
+            <input type="number" id="rwLength" placeholder="e.g., 71">
+        </div>
 
-<!-- Ground Quality -->
-<label for="rwGround">Ground Quality</label>
-<select id="rwGround">
-<option value="poor">Poor</option>
-<option value="average" selected>Average</option>
-<option value="good">Good</option>
-</select>
+        <div class="input-row">
+            <label for="rwBands">Bands (MHz, comma-separated):</label>
+            <input type="text" id="rwBands" placeholder="e.g., 3.5, 7, 14, 18, 21">
+        </div>
 
-<!-- Bands -->
-<label for="rwBands">Bands</label>
-<select id="rwBands" multiple>
-<option value="80">80m</option>
-<option value="60">60m</option>
-<option value="40">40m</option>
-<option value="30">30m</option>
-<option value="20">20m</option>
-<option value="17">17m</option>
-<option value="15">15m</option>
-<option value="12">12m</option>
-<option value="10">10m</option>
-</select>
+        <button id="rwCalc" class="calc-btn">Analyze</button>
+    </div>
 
-<!-- Analyze Button -->
-<button id="rwAnalyze">Analyze Random Wire</button>
+    <!-- OUTPUT PANEL -->
+    <div class="output-panel">
 
-<!-- Results -->
-<div id="rwResults"></div>
-<div id="rwWarnings"></div>
+        <h3>Results</h3>
 
-</div>
+        <div class="result-row">
+            <label>Avoid-Length Classification:</label>
+            <span id="rwClass">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Band Coverage:</label>
+            <span id="rwCoverage">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Recommended Match:</label>
+            <span id="rwMatch">—</span>
+        </div>
+
+    </div>
+
+</section>
