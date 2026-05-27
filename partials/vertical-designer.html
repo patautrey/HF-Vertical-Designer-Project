@@ -4,65 +4,66 @@
 
 <section class="tool-header">
     <h2>Vertical Designer</h2>
-    <p>Calculate resonant lengths, radial systems, and HF performance.</p>
+    <p>Model HF verticals, radials, and takeoff behavior.</p>
 </section>
 
 <section class="tool-body">
 
-    <!-- INPUTS -->
+    <!-- INPUT PANEL -->
     <div class="input-panel">
 
         <div class="input-row">
-            <label for="band">Band (MHz):</label>
-            <input type="number" id="band" placeholder="e.g., 7.2">
+            <label for="vdBand">Band (MHz):</label>
+            <input type="number" id="vdBand" placeholder="e.g., 7.1">
         </div>
 
         <div class="input-row">
-            <label for="height">Vertical Height (ft):</label>
-            <input type="number" id="height" placeholder="e.g., 33">
+            <label for="vdHeight">Vertical Height (ft):</label>
+            <input type="number" id="vdHeight" placeholder="e.g., 33">
         </div>
 
         <div class="input-row">
-            <label for="radials">Number of Radials:</label>
-            <input type="number" id="radials" placeholder="e.g., 16">
+            <label for="vdRadials">Radial Count:</label>
+            <input type="number" id="vdRadials" placeholder="e.g., 16">
         </div>
 
         <div class="input-row">
-            <label for="radialLength">Radial Length (ft):</label>
-            <input type="number" id="radialLength" placeholder="e.g., 33">
+            <label for="vdRadialLen">Radial Length (ft):</label>
+            <input type="number" id="vdRadialLen" placeholder="e.g., 16">
         </div>
 
-        <button id="calcVertical" class="calc-btn">Calculate</button>
+        <button id="vdCalc" class="calc-btn">Calculate</button>
+        <button id="vdExport" class="calc-btn">Download Results</button>
     </div>
 
-    <!-- OUTPUTS -->
+    <!-- OUTPUT PANEL -->
     <div class="output-panel">
 
         <h3>Results</h3>
 
         <div class="result-row">
             <label>Wavelength:</label>
-            <span id="outWavelength">—</span>
+            <span id="vdWavelength">—</span>
         </div>
 
         <div class="result-row">
             <label>Resonant Length:</label>
-            <span id="outResonant">—</span>
+            <span id="vdResonant">—</span>
         </div>
 
         <div class="result-row">
             <label>NVIS Angle:</label>
-            <span id="outNVIS">—</span>
+            <span id="vdNVIS">—</span>
         </div>
 
         <div class="result-row">
-            <label>DX Lobe Tendency:</label>
-            <span id="outDX">—</span>
+            <label>DX Tendency:</label>
+            <span id="vdDX">—</span>
         </div>
 
         <div class="result-row">
             <label>Radial Efficiency:</label>
-            <span id="outRadials">—</span>
+            <span id="vdRadialEff">—</span>
         </div>
 
     </div>
