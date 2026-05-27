@@ -1,25 +1,36 @@
 <div id="random-wire-view" class="view" style="display:none;">
-<h2>Random‑Wire + 9:1 Designer</h2>
-<label>
-<input type="checkbox" id="rwFieldMode">
-Field Mode (29 / 41 / 58 ft only)
-</label>
-<label for="rwLengthSelect">Wire Length (ft)</label>
-<select id="rwLengthSelect">
-<option value="29">29 ft — Safe (40–10m)</option>
-<option value="35.5">35.5 ft — Safe (40–10m)</option>
-<option value="41">41 ft — Safe (40–10m)</option>
-<option value="58">58 ft — Safe (80–10m)</option>
-<option value="71">71 ft — Safe (80–10m)</option>
-<option value="84">84 ft — Safe (80–10m)</option>
-<option value="107">107 ft — Safe (80–10m)</option>
-<option value="124">124 ft — Safe (80–10m)</option>
-<option value="custom">Custom Length…</option>
+<h2>Random‑Wire + 9:1</h2>
+
+<!-- Wire Length -->
+<label for="rwLength">Wire Length (ft)</label>
+<input type="number" id="rwLength" value="29">
+
+<!-- Transformer Type -->
+<label for="rwTransformer">Transformer</label>
+<select id="rwTransformer">
+<option value="9to1">9:1 Unun</option>
+<option value="4to1">4:1 Balun</option>
+<option value="1to1">1:1 Current Balun</option>
 </select>
-<div id="rwCustomLengthContainer" style="display:none;">
-<input type="number" id="rwCustomLength" placeholder="Enter wire length (ft)">
-</div>
-<label for="rwBands">Target Bands</label>
+
+<!-- Counterpoise Length -->
+<label for="rwCounterpoise">Counterpoise Length (ft)</label>
+<input type="number" id="rwCounterpoise" value="17">
+
+<!-- Height -->
+<label for="rwHeight">Antenna Height (ft)</label>
+<input type="number" id="rwHeight" value="25">
+
+<!-- Ground Quality -->
+<label for="rwGround">Ground Quality</label>
+<select id="rwGround">
+<option value="poor">Poor</option>
+<option value="average" selected>Average</option>
+<option value="good">Good</option>
+</select>
+
+<!-- Bands -->
+<label for="rwBands">Bands</label>
 <select id="rwBands" multiple>
 <option value="80">80m</option>
 <option value="60">60m</option>
@@ -31,8 +42,12 @@ Field Mode (29 / 41 / 58 ft only)
 <option value="12">12m</option>
 <option value="10">10m</option>
 </select>
-<button id="rwRecommend">Recommended Length</button>
+
+<!-- Analyze Button -->
 <button id="rwAnalyze">Analyze Random Wire</button>
+
+<!-- Results -->
 <div id="rwResults"></div>
 <div id="rwWarnings"></div>
+
 </div>
