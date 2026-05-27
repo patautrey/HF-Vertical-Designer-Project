@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const loadZ = parseFloat(document.getElementById("flLoadZ").value) || 50;
         const sourceZ = parseFloat(document.getElementById("flSourceZ").value) || 50;
 
+        // Velocity factor lookup
         let vf = 0.66;
         if (type === "rg58") vf = 0.64;
         if (type === "rg8x") vf = 0.78;
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (type === "ladder600") vf = 0.92;
         if (type === "custom" && customVF) vf = customVF;
 
+        // Basic electrical length calculation
         const wavelength = 984 / freq;
         const electricalLength = (length / wavelength) * 360;
 
