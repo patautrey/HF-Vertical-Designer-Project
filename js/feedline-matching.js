@@ -1,46 +1,108 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const analyzeBtn = document.getElementById("flAnalyze");
-    if (!analyzeBtn) return;
+/* ============================================================
+   feedline-matching.js — Tool Logic
+   HF Feedline & Matching Calculator
+   ============================================================ */
 
-    analyzeBtn.addEventListener("click", () => {
-        const type = document.getElementById("flType").value;
-        const customVF = parseFloat(document.getElementById("flCustomVF").value) || null;
-        const length = parseFloat(document.getElementById("flLength").value) || 0;
-        const freq = parseFloat(document.getElementById("flFreq").value) || 0;
-        const loadZ = parseFloat(document.getElementById("flLoadZ").value) || 50;
-        const sourceZ = parseFloat(document.getElementById("flSourceZ").value) || 50;
+(function() {
 
-        // Velocity factor lookup
-        let vf = 0.66;
-        if (type === "rg58") vf = 0.64;
-        if (type === "rg8x") vf = 0.78;
-        if (type === "lmr240") vf = 0.84;
-        if (type === "lmr400") vf = 0.85;
-        if (type === "ladder300") vf = 0.90;
-        if (type === "ladder450") vf = 0.91;
-        if (type === "ladder600") vf = 0.92;
-        if (type === "custom" && customVF) vf = customVF;
+    /* Grab UI elements */
+    const freqEl = document.getElementById("fmFreq");
+    const swrEl = document.getElementById("fmSWR");
+    const lenEl = document.getElementById("fmLength");
+    const typeEl = document.getElementById("fmType");
+    const calcBtn = document.getElementById("fmCalc");
 
-        // Basic electrical length calculation
-        const wavelength = 984 / freq;
-        const electricalLength = (length / wavelength) * 360;
+    const outLoss = document.getElementById("fmLoss");
+    const outPower = document.getElementById("fmPower");
+    const outTransformed = document.getElementById("fmTransformed");
+    const outMatch = document.getElementById("fmMatch");
 
-        let results = "";
-        let warnings = "";
+    if (!calcBtn) {
+        console.error("Feedline Matching UI not found");
+        return;
+    }
 
-        results += `<h3>Feedline Analysis</h3>`;
-        results += `<p><strong>Type:</strong> ${type}</p>`;
-        results += `<p><strong>Velocity Factor:</strong> ${vf}</p>`;
-        results += `<p><strong>Length:</strong> ${length} ft</p>`;
-        results += `<p><strong>Electrical Length:</strong> ${electricalLength.toFixed(1)}°</p>`;
-        results += `<p><strong>Load Z:</strong> ${loadZ} Ω</p>`;
-        results += `<p><strong>Source Z:</strong> ${sourceZ} Ω</p>`;
+    /* ========================================================
+       Feedline Loss Table (dB per 100 ft @ 30 MHz)
+       ======================================================== */
+    const lossTable = {
+        rg8x:   3.2,
+        rg213:  1.5,
+        lmr240: 2.1,
+        lmr400: 0.7,
+        ladder450: 0.1
+    };
 
-        if (electricalLength % 180 < 20) {
-            warnings += `<p>⚠ Feedline is near a half‑wave — impedance transformation may be extreme.</p>`;
+    /* ========================================================
+       Frequency Scaling
+       Loss ∝ sqrt(frequency)
+       ======================================================== */
+    function scaledLoss(baseLoss, freqMHz) {
+        return baseLoss * Math.sqrt(freqMHz / 30);
+    }
+
+    /* ========================================================
+       SWR Transformation (approximate)
+       ======================================================== */
+    function transformSWR(swr, lengthFt, freqMHz) {
+        if (!swr || swr < 1) return 1;
+
+        const wl = 984 / freqMHz;
+        const electricalLength = (lengthFt / wl) * 360;
+
+        const radians = electricalLength * (Math.PI / 180);
+        const transformed = swr + (Math.sin(radians) * (swr - 1));
+
+        return Math.max(1, transformed.toFixed(2));
+    }
+
+    /* ========================================================
+       Matching Recommendation
+       ======================================================== */
+    function recommendMatch(swr) {
+        if (swr <= 2) return "No matching required";
+        if (swr <= 3) return "Internal tuner OK";
+        if (swr <= 5) return "External tuner recommended";
+        return "Use 4:1 or 9:1 transformer";
+    }
+
+    /* ========================================================
+       Main Calculation Handler
+       ======================================================== */
+    calcBtn.addEventListener("click", () => {
+
+        const freq = parseFloat(freqEl.value);
+        const swr = parseFloat(swrEl.value);
+        const length = parseFloat(lenEl.value);
+        const type = typeEl.value;
+
+        if (!freq || !swr || !length) {
+            outLoss.textContent = "—";
+            outPower.textContent = "—";
+            outTransformed.textContent = "—";
+            outMatch.textContent = "—";
+            return;
         }
 
-        document.getElementById("flResults").innerHTML = results;
-        document.getElementById("flWarnings").innerHTML = warnings;
+        /* Base loss for selected feedline */
+        const baseLoss = lossTable[type];
+        const lossPer100 = scaledLoss(baseLoss, freq);
+
+        /* Total loss */
+        const totalLoss = (lossPer100 * (length / 100)).toFixed(2);
+        outLoss.textContent = `${totalLoss} dB`;
+
+        /* Delivered power */
+        const delivered = (100 * Math.pow(10, -totalLoss / 10)).toFixed(1);
+        outPower.textContent = `${delivered}%`;
+
+        /* Transformed SWR */
+        const transformed = transformSWR(swr, length, freq);
+        outTransformed.textContent = transformed;
+
+        /* Matching recommendation */
+        outMatch.textContent = recommendMatch(transformed);
+
     });
-});
+
+})();
