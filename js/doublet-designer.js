@@ -1,135 +1,106 @@
-/* doublet-designer.js — Full Module Logic */
+/* ============================================================
+   doublet-designer.js — Tool Logic
+   HF Doublet Designer
+   ============================================================ */
 
-document.addEventListener("DOMContentLoaded", function () {
+(function() {
 
-    /* DOM Elements */
-    const ddType = document.getElementById("ddType");
-    const ddWireLength = document.getElementById("ddWireLength");
-    const ddLLLength = document.getElementById("ddLLLength");
-    const ddLLZ = document.getElementById("ddLLZ");
-    const ddBalun = document.getElementById("ddBalun");
-    const ddHeight = document.getElementById("ddHeight");
-    const ddBands = document.getElementById("ddBands");
-
-    const ddAnalyze = document.getElementById("ddAnalyze");
-    const ddResults = document.getElementById("ddResults");
-    const ddWarnings = document.getElementById("ddWarnings");
-
-    /* Band → MHz */
-    const bandMHz = {
-        "80": 3.5,
-        "60": 5.3,
-        "40": 7.15,
-        "30": 10.1,
-        "20": 14.2,
-        "17": 18.1,
-        "15": 21.2,
-        "12": 24.9,
-        "10": 28.5
-    };
-
-    /* Presets */
-    const presets = {
-        g5rv:      { wire: 102, ll: 34,  z: 450 },
-        zs6bkw:    { wire: 93,  ll: 39,  z: 450 },
-        "20m":     { wire: 33,  ll: 16,  z: 450 },
-        "40m":     { wire: 66,  ll: 28,  z: 450 },
-        "80m":     { wire: 132, ll: 34,  z: 450 }
-    };
-
-    /* Apply Preset */
-    ddType.addEventListener("change", () => {
-        const t = ddType.value;
-        if (t !== "custom") {
-            ddWireLength.value = presets[t].wire;
-            ddLLLength.value = presets[t].ll;
-            ddLLZ.value = presets[t].z;
-        }
-    });
-
-    /* Feedpoint Z Model */
-    function computeFeedpointZ(freqMHz, wireFt, llFt, llZ, heightFt) {
-        const wl = HFUtils.wavelength(freqMHz) * 3.28;
-
-        const halfWave = wl / 2;
-        const wireRatio = wireFt / halfWave;
-
-        let Z = 50;
-
-        if (wireRatio < 0.8) Z = 30;
-        if (wireRatio >= 0.8 && wireRatio <= 1.2) Z = 70;
-        if (wireRatio > 1.2) Z = 120;
-
-        if (llZ === 300) Z *= 1.1;
-        if (llZ === 450) Z *= 1.3;
-        if (llZ === 600) Z *= 1.5;
-
-        const hRatio = heightFt / wl;
-        if (hRatio < 0.15) Z *= 0.8;
-        if (hRatio > 0.25) Z *= 1.2;
-
-        return Math.round(Z);
+    /* Ensure HFUtils exists */
+    if (typeof HFUtils === "undefined") {
+        console.error("HFUtils not loaded");
+        return;
     }
 
-    /* SWR */
-    function computeSWR(Z, Z0 = 50) {
-        const swr = (Z > Z0) ? (Z / Z0) : (Z0 / Z);
-        return swr.toFixed(2);
+    /* Grab UI elements */
+    const wireEl = document.getElementById("dblWire");
+    const ladderEl = document.getElementById("dblLadder");
+    const zEl = document.getElementById("dblZ");
+    const bandsEl = document.getElementById("dblBands");
+    const calcBtn = document.getElementById("dblCalc");
+
+    const outImpedance = document.getElementById("dblImpedance");
+    const outCoverage = document.getElementById("dblCoverage");
+    const outTuner = document.getElementById("dblTuner");
+
+    if (!calcBtn) {
+        console.error("Doublet Designer UI not found");
+        return;
     }
 
-    /* Pattern Summary */
-    function patternSummary(freqMHz, heightFt) {
-        return HFUtils.dxLobes(heightFt, 20, freqMHz);
+    /* ========================================================
+       Band Coverage Estimation
+       ======================================================== */
+    function bandCoverage(wireFt, bands) {
+        const easy = [];
+        const hard = [];
+        const no = [];
+
+        bands.forEach(b => {
+            const wl = HFUtils.wavelength(b);
+            const ratio = wireFt / wl;
+
+            if (ratio > 0.2 && ratio < 1.5) easy.push(b);
+            else if (ratio >= 1.5 && ratio < 3) hard.push(b);
+            else no.push(b);
+        });
+
+        return { easy, hard, no };
     }
 
-    /* Balun Notes */
-    function balunNotes(type) {
-        if (type === "1to1") return "1:1 current balun recommended for balanced doublets.";
-        if (type === "4to1") return "4:1 current balun useful for higher feedpoint impedance.";
-        if (type === "unun9to1") return "9:1 unun is not recommended for center‑fed doublets.";
-        return "";
+    /* ========================================================
+       Tuner Recommendation
+       ======================================================== */
+    function tunerRecommendation(impedanceText) {
+        if (impedanceText.includes("low")) return "Internal tuner OK";
+        if (impedanceText.includes("moderate")) return "External tuner recommended";
+        return "High-power balanced tuner required";
     }
 
-    /* Main Analysis */
-    ddAnalyze.addEventListener("click", () => {
+    /* ========================================================
+       Main Calculation Handler
+       ======================================================== */
+    calcBtn.addEventListener("click", () => {
 
-        ddResults.innerHTML = "";
-        ddWarnings.innerHTML = "";
+        const wire = parseFloat(wireEl.value);
+        const ladder = parseFloat(ladderEl.value);
+        const z = parseFloat(zEl.value);
+        const bandsRaw = bandsEl.value;
 
-        const wireFt = parseFloat(ddWireLength.value) || 0;
-        const llFt = parseFloat(ddLLLength.value) || 0;
-        const llZ = parseInt(ddLLZ.value) || 450;
-        const balun = ddBalun.value;
-        const heightFt = parseFloat(ddHeight.value) || 0;
-
-        const selectedBands = Array.from(ddBands.selectedOptions).map(o => o.value);
-
-        if (selectedBands.length === 0) {
-            ddWarnings.innerHTML = "<span class='warning-red'>Select at least one band.</span>";
+        if (!wire || !ladder || !z || !bandsRaw) {
+            outImpedance.textContent = "—";
+            outCoverage.textContent = "—";
+            outTuner.textContent = "—";
             return;
         }
 
-        let html = "";
+        /* Parse bands */
+        const bands = bandsRaw
+            .split(",")
+            .map(b => parseFloat(b.trim()))
+            .filter(b => !isNaN(b));
 
-        selectedBands.forEach(b => {
-            const mhz = bandMHz[b];
-            const Z = computeFeedpointZ(mhz, wireFt, llFt, llZ, heightFt);
-            const swr = computeSWR(Z);
-            const pattern = patternSummary(mhz, heightFt);
-            const balunMsg = balunNotes(balun);
+        if (bands.length === 0) {
+            outCoverage.textContent = "Invalid band list";
+            return;
+        }
 
-            html += `
-                <div style="margin-bottom:20px; padding:10px; border:1px solid #ddd; border-radius:6px;">
-                    <h3>${b}m Band</h3>
-                    <p><b>Feedpoint Impedance:</b> ${Z} Ω</p>
-                    <p><b>SWR (50Ω):</b> ${swr}</p>
-                    <p><b>Pattern:</b> ${pattern}</p>
-                    <p><b>Balun:</b> ${balunMsg}</p>
-                </div>
-            `;
-        });
+        /* Impedance tendency (from HFUtils) */
+        const imp = HFUtils.doubletImpedance(wire, ladder, z);
+        outImpedance.textContent = imp;
 
-        ddResults.innerHTML = html;
+        /* Band coverage */
+        const cov = bandCoverage(wire, bands);
+
+        const covText =
+            `Easy: ${cov.easy.join(", ") || "None"} | ` +
+            `Hard: ${cov.hard.join(", ") || "None"} | ` +
+            `No: ${cov.no.join(", ") || "None"}`;
+
+        outCoverage.textContent = covText;
+
+        /* Tuner recommendation */
+        outTuner.textContent = tunerRecommendation(imp);
+
     });
 
-});
+})();
