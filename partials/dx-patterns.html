@@ -1,88 +1,46 @@
 <div id="dx-patterns-view" class="view" style="display:none;">
 <h2>DX & Patterns</h2>
 
+<!-- Frequency -->
+<label for="dxFreq">Frequency (MHz)</label>
+<input type="number" id="dxFreq" value="14.2">
+
+<!-- Antenna Height -->
+<label for="dxHeight">Antenna Height (ft)</label>
+<input type="number" id="dxHeight" value="33">
+
+<!-- Antenna Type -->
 <label for="dxAntennaType">Antenna Type</label>
 <select id="dxAntennaType">
-<option value="vertical">Vertical (1/4λ, 1/2λ, Loaded)</option>
+<option value="vertical">Vertical</option>
 <option value="dipole">Dipole</option>
-<option value="invV">Inverted‑V</option>
-<option value="ocf">OCF Dipole</option>
-<option value="doublet">Center‑Fed Doublet</option>
-<option value="loop">Full‑Wave Horizontal Loop</option>
-<option value="efhw">End‑Fed Half‑Wave (EFHW)</option>
-<option value="random">Random‑Wire</option>
+<option value="invertedV">Inverted‑V</option>
+<option value="efhw">EFHW</option>
+<option value="loop">Loop</option>
+<option value="yagi">Yagi</option>
 </select>
 
-<!-- Wire length -->
-<div id="dxWireLengthBlock">
-<label for="dxWireLength">Wire Length (ft)</label>
-<input type="number" id="dxWireLength">
-</div>
-
-<!-- Inverted‑V leg length -->
-<div id="dxLegLengthBlock" style="display:none;">
-<label for="dxLegLength">Leg Length (ft)</label>
-<input type="number" id="dxLegLength">
-</div>
-
-<!-- OCF offset -->
-<div id="dxOffsetBlock" style="display:none;">
-<label for="dxOffset">OCF Offset (%)</label>
-<input type="number" id="dxOffset" value="33">
-</div>
-
-<!-- Loop shape + circumference -->
-<div id="dxLoopBlock" style="display:none;">
-<label for="dxLoopShape">Loop Shape</label>
-<select id="dxLoopShape">
-<option value="square">Square Loop</option>
-<option value="delta">Delta Loop</option>
-<option value="rectangle">Rectangle Loop</option>
+<!-- Ground Quality -->
+<label for="dxGround">Ground Quality</label>
+<select id="dxGround">
+<option value="poor">Poor</option>
+<option value="average" selected>Average</option>
+<option value="good">Good</option>
 </select>
 
-<label for="dxLoopCirc">Loop Circumference (ft)</label>
-<input type="number" id="dxLoopCirc">
-</div>
-
-<!-- Random‑wire -->
-<div id="dxRandomBlock" style="display:none;">
-<label for="dxRandomLength">Random‑Wire Length (ft)</label>
-<select id="dxRandomLength">
-<option value="29">29 ft</option>
-<option value="35.5">35.5 ft</option>
-<option value="41">41 ft</option>
-<option value="58">58 ft</option>
-<option value="71">71 ft</option>
-<option value="84">84 ft</option>
-<option value="107">107 ft</option>
-<option value="124">124 ft</option>
-<option value="custom">Custom Length…</option>
-</select>
-<div id="dxRandomCustom" style="display:none;">
-<input type="number" id="dxRandomCustomLength" placeholder="Enter wire length (ft)">
-</div>
-</div>
-
-<!-- Height -->
-<label for="dxHeight">Height Above Ground (ft)</label>
-<input type="number" id="dxHeight">
-
-<!-- Bands -->
-<label for="dxBands">Bands</label>
-<select id="dxBands" multiple>
-<option value="80">80m</option>
-<option value="60">60m</option>
-<option value="40">40m</option>
-<option value="30">30m</option>
-<option value="20">20m</option>
-<option value="17">17m</option>
-<option value="15">15m</option>
-<option value="12">12m</option>
-<option value="10">10m</option>
+<!-- Pattern Mode -->
+<label for="dxMode">Pattern Mode</label>
+<select id="dxMode">
+<option value="elevation">Elevation Pattern</option>
+<option value="azimuth">Azimuth Pattern</option>
+<option value="dxScore">DX Score</option>
 </select>
 
+<!-- Analyze Button -->
 <button id="dxAnalyze">Analyze Pattern</button>
 
+<!-- Results -->
 <div id="dxResults"></div>
 <div id="dxWarnings"></div>
+
 </div>
