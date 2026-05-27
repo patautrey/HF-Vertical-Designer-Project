@@ -1,1 +1,47 @@
-<div class="page-header"><h1>Feedline & Matching</h1><p>Approximate feedline loss, impedance transformation, and matching considerations across HF bands.</p></div><div class="grid grid-2"><div class="card"><h2>Feedline Configuration</h2><form id="feedline-form" class="form-grid"><label class="form-field"><span>Feedline type</span><select id="feedline-type"><option value="rg58">RG-58 coax</option><option value="rg213">RG-213 coax</option><option value="ladder450">450 Ω ladder line</option><option value="custom">Custom</option></select></label><label class="form-field"><span>Length (ft)</span><input type="number" id="feedline-length-ft" value="50" min="1" step="1"></label><label class="form-field"><span>Operating frequency (MHz)</span><input type="number" id="feedline-freq-mhz" value="14" min="1" step="0.1"></label><label class="form-field"><span>Load impedance (Ω)</span><input type="number" id="feedline-load-ohms" value="50" min="1" step="1"></label><label class="form-field"><span>Source impedance (Ω)</span><input type="number" id="feedline-source-ohms" value="50" min="1" step="1"></label><button type="button" id="btn-eval-feedline" class="btn btn-primary form-full">Evaluate feedline</button></form></div><div class="card"><h2>Feedline Summary</h2><div class="summary-panel"><p class="summary-line"><span class="summary-label">Estimated loss:</span><span id="feedline-loss">–</span></p><p class="summary-line"><span class="summary-label">Approx. SWR at load:</span><span id="feedline-swr-load">–</span></p><p class="summary-line"><span class="summary-label">Approx. SWR at rig:</span><span id="feedline-swr-rig">–</span></p><p class="summary-line"><span class="summary-label">Transformed Z at rig:</span><span id="feedline-z-rig">–</span></p></div><div class="card-subsection"><h3>Notes</h3><ul class="notes-list"><li>Loss and transformation are first-order estimates for planning.</li><li>Line data is simplified; consult manufacturer charts for precision.</li><li>Future versions may add frequency-sweep plots and Smith chart views.</li></ul></div></div></div>
+<div id="feedline-matching-view" class="view" style="display:none;">
+<h2>Feedline & Matching</h2>
+
+<!-- Feedline Type -->
+<label for="flType">Feedline Type</label>
+<select id="flType">
+<option value="rg58">RG‑58 (0.64 VF)</option>
+<option value="rg8x">RG‑8X (0.78 VF)</option>
+<option value="rg213">RG‑213 (0.66 VF)</option>
+<option value="lmr240">LMR‑240 (0.84 VF)</option>
+<option value="lmr400">LMR‑400 (0.85 VF)</option>
+<option value="ladder300">300 Ω Ladder Line (0.91 VF)</option>
+<option value="ladder450">450 Ω Ladder Line (0.95 VF)</option>
+<option value="ladder600">600 Ω Ladder Line (0.98 VF)</option>
+<option value="custom">Custom Feedline</option>
+</select>
+
+<!-- Custom VF -->
+<div id="flCustomBlock" style="display:none;">
+<label for="flCustomVF">Custom Velocity Factor</label>
+<input type="number" id="flCustomVF" step="0.01" placeholder="0.80">
+</div>
+
+<!-- Length -->
+<label for="flLength">Feedline Length (ft)</label>
+<input type="number" id="flLength" value="50">
+
+<!-- Frequency -->
+<label for="flFreq">Operating Frequency (MHz)</label>
+<input type="number" id="flFreq" value="14.2">
+
+<!-- Load Impedance -->
+<label for="flLoadZ">Load Impedance (Ω)</label>
+<input type="number" id="flLoadZ" value="50">
+
+<!-- Source Impedance -->
+<label for="flSourceZ">Source Impedance (Ω)</label>
+<input type="number" id="flSourceZ" value="50">
+
+<!-- Analyze Button -->
+<button id="flAnalyze">Analyze Feedline</button>
+
+<!-- Results -->
+<div id="flResults"></div>
+<div id="flWarnings"></div>
+
+</div>
