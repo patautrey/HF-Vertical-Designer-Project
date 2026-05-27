@@ -2,82 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HF Vertical Designer Project</title>
-
-    <!-- ============================================================
-         GLOBAL STYLES
-         ============================================================ -->
-    <link rel="stylesheet" href="css/style.css">
+    <title>HF Tools Suite - KG5IEF</title>
+    <link rel="stylesheet" href="css/style.css?v=1">
 </head>
-
 <body>
 
-    <!-- ============================================================
-         APP WRAPPER
-         ============================================================ -->
-    <div id="app">
+<div id="app">
 
-        <!-- ========================================================
-             SIDEBAR NAVIGATION
-             ======================================================== -->
-        <aside id="sidebar">
-            <header class="sidebar-header">
-                <h1>HF Tools Suite</h1>
-            </header>
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h1>HF Tools Suite</h1>
+            <p>KG5IEF — Antenna & Feedline Lab</p>
+        </div>
 
-            <nav class="sidebar-nav">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#" data-view="welcome">Welcome</a></li>
+                <li><a href="#" data-view="vertical-designer">Vertical Designer</a></li>
+                <li><a href="#" data-view="feedline-matching">Feedline &amp; Matching</a></li>
+                <li><a href="#" data-view="dx-patterns">DX Pattern Explorer</a></li>
+                <li><a href="#" data-view="nvis-field">NVIS Field Estimator</a></li>
+                <li><a href="#" data-view="doublet-designer">Doublet Designer</a></li>
+                <li><a href="#" data-view="random-wire">Random Wire Analyzer</a></li>
+                <li><a href="#" data-view="user-manual">User Manual</a></li>
+                <li><a href="#" data-view="quick-start">Quick Start Guide</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>HF Engineering Toolkit — KG5IEF</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main">
+        <section class="welcome">
+            <h2>HF Tools Suite</h2>
+            <p>Select a tool or documentation page from the left to begin.</p>
+            <div class="welcome-info">
+                <p><strong>Important:</strong> All fields must have an entry, even if it is 0. Blank fields prevent the calculation engine from running.</p>
                 <ul>
-                    <li><a href="#" data-view="vertical-designer">Vertical Designer</a></li>
-                    <li><a href="#" data-view="feedline-matching">Feedline & Matching</a></li>
-                    <li><a href="#" data-view="dx-patterns">DX & Patterns</a></li>
-                    <li><a href="#" data-view="nvis-field">NVIS Field</a></li>
-                    <li><a href="#" data-view="doublet-designer">Doublet Designer</a></li>
-                    <li><a href="#" data-view="random-wire">Random Wire</a></li>
+                    <li>Model verticals, doublets, and random wires</li>
+                    <li>Analyze feedline loss and matching</li>
+                    <li>Explore DX and NVIS patterns</li>
+                    <li>Export results as text files for your station notebook</li>
                 </ul>
-            </nav>
+            </div>
+        </section>
+    </main>
 
-            <footer class="sidebar-footer">
-                <p>KG5IEF • HF Engineering Tools</p>
-            </footer>
-        </aside>
+</div>
 
-        <!-- ========================================================
-             MAIN CONTENT AREA
-             ======================================================== -->
-        <main id="main">
-
-            <!-- Default landing content -->
-            <section class="welcome">
-                <h2>HF Vertical Designer Project</h2>
-                <p>Select a tool from the left to begin.</p>
-
-                <div class="welcome-info">
-                    <p>This suite includes:</p>
-                    <ul>
-                        <li>Vertical Designer</li>
-                        <li>Feedline & Matching Calculator</li>
-                        <li>DX Pattern Explorer</li>
-                        <li>NVIS Field Estimator</li>
-                        <li>Doublet Designer</li>
-                        <li>Random Wire Analyzer</li>
-                    </ul>
-                </div>
-            </section>
-
-        </main>
-
-    </div>
-
-    <!-- ============================================================
-         CORE SCRIPT ENGINE
-         ============================================================ -->
-
-    <!-- HF Math Engine -->
-    <script src="js/utils.js?v=1"></script>
-
-    <!-- SPA Router + Dynamic Loader -->
-    <script src="js/app.js?v=1"></script>
+<script src="js/utils.js?v=1"></script>
+<script src="js/app.js?v=1"></script>
+<script src="js/vertical-designer.js?v=1"></script>
+<script src="js/feedline-matching.js?v=1"></script>
+<script src="js/dx-patterns.js?v=1"></script>
+<script src="js/nvis-field.js?v=1"></script>
+script src="js/doublet-designer.js?v=1"></script>
+<script src="js/random-wire.js?v=1"></script>
 
 </body>
 </html>
