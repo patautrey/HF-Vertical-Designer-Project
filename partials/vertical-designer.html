@@ -1,112 +1,70 @@
-<div class="view">
-  <h2>Vertical Designer</h2>
+<!-- ============================================================
+     Vertical Designer — Partial View
+     ============================================================ -->
 
-  <div class="card">
-    <h3>Operating Mode</h3>
+<section class="tool-header">
+    <h2>Vertical Designer</h2>
+    <p>Calculate resonant lengths, radial systems, and HF performance.</p>
+</section>
 
-    <label for="vdMode">Mode</label>
-    <select id="vdMode">
-      <option value="single">Single-Band Mode</option>
-      <option value="multi">Multi-Band Mode</option>
-    </select>
+<section class="tool-body">
 
-    <label for="vdBands">Bands</label>
-    <select id="vdBands" multiple size="10">
-      <option value="80m">80m</option>
-      <option value="60m">60m</option>
-      <option value="40m">40m</option>
-      <option value="30m">30m</option>
-      <option value="20m">20m</option>
-      <option value="17m">17m</option>
-      <option value="15m">15m</option>
-      <option value="12m">12m</option>
-      <option value="10m">10m</option>
-      <option value="6m">6m</option>
-    </select>
-  </div>
+    <!-- INPUTS -->
+    <div class="input-panel">
 
-  <div class="card">
-    <h3>Antenna Geometry</h3>
+        <div class="input-row">
+            <label for="band">Band (MHz):</label>
+            <input type="number" id="band" placeholder="e.g., 7.2">
+        </div>
 
-    <label for="vdType">Antenna Type</label>
-    <select id="vdType">
-      <option value="quarter">1/4-Wave Vertical</option>
-      <option value="turbo">0.70λ DX Turbo</option>
-      <option value="efhw">End-Fed Half-Wave</option>
-      <option value="performer">POTA PERformer (Elevated Resonant)</option>
-      <option value="dominator">POTA Dominator (Half-Wave DX)</option>
-      <option value="custom">Custom Vertical</option>
-    </select>
+        <div class="input-row">
+            <label for="height">Vertical Height (ft):</label>
+            <input type="number" id="height" placeholder="e.g., 33">
+        </div>
 
-    <label for="vdCustomLength">Custom Vertical Length (ft)</label>
-    <input id="vdCustomLength" type="number" step="0.1">
+        <div class="input-row">
+            <label for="radials">Number of Radials:</label>
+            <input type="number" id="radials" placeholder="e.g., 16">
+        </div>
 
-    <label for="vdHeight">Height Above Ground (ft)</label>
-    <input id="vdHeight" type="number" step="0.1">
+        <div class="input-row">
+            <label for="radialLength">Radial Length (ft):</label>
+            <input type="number" id="radialLength" placeholder="e.g., 33">
+        </div>
 
-    <label for="vdGround">Ground Quality</label>
-    <select id="vdGround">
-      <option value="poor">Poor Ground</option>
-      <option value="average" selected>Average Ground</option>
-      <option value="good">Good Ground</option>
-      <option value="saltwater">Saltwater / Seaside</option>
-    </select>
-  </div>
-
-  <div class="card">
-    <h3>Radial System</h3>
-
-    <label for="vdRadialCount">Number of Radials</label>
-    <input id="vdRadialCount" type="number" step="1" value="16">
-
-    <label for="vdRadialLength">Radial Length (ft)</label>
-    <input id="vdRadialLength" type="number" step="0.1">
-
-    <label for="vdRadialType">Radial Type</label>
-    <select id="vdRadialType">
-      <option value="ground">Ground-Mounted</option>
-      <option value="elevated">Elevated</option>
-      <option value="counterpoise">Counterpoise Wire</option>
-    </select>
-  </div>
-
-  <div class="card">
-    <h3>Boost Options</h3>
-
-    <div class="boost-grid">
-      <label><input type="checkbox" id="vdBoostReflector"> Reflector (+2.5 dB)</label>
-      <label><input type="checkbox" id="vdBoostDirector"> Director (+1.5 dB)</label>
-      <label><input type="checkbox" id="vdBoostElevatedRadials"> Elevated Radials (+1.8 dB)</label>
-      <label><input type="checkbox" id="vdBoostGroundScreen"> Ground Screen (+1.0 dB)</label>
-      <label><input type="checkbox" id="vdBoostSaltwater"> Saltwater Site (+5.0 dB)</label>
-      <label><input type="checkbox" id="vdBoostTurbo"> 0.70λ DX Turbo (+3.5 dB)</label>
+        <button id="calcVertical" class="calc-btn">Calculate</button>
     </div>
 
-    <h3>Time of Day</h3>
-    <select id="vdTimeOfDay">
-      <option value="day">Day (0 dB)</option>
-      <option value="night">Night (+3 dB)</option>
-      <option value="dawn">Dawn / Greyline (+6 dB)</option>
-      <option value="dusk">Dusk / Greyline (+6 dB)</option>
-    </select>
+    <!-- OUTPUTS -->
+    <div class="output-panel">
 
-    <h3>Feedline Type</h3>
-    <select id="vdFeedlineType">
-      <option value="rg8x">RG‑8X (0 dB)</option>
-      <option value="rg58">RG‑58 (–1.0 dB)</option>
-      <option value="lmr240">LMR‑240 (+0.8 dB)</option>
-      <option value="lmr400">LMR‑400 (+1.5 dB)</option>
-      <option value="ladder450">450Ω Ladder Line (+2.0 dB)</option>
-      <option value="ladder600">600Ω Ladder Line (+2.5 dB)</option>
-    </select>
+        <h3>Results</h3>
 
-    <button id="vdAnalyze">Analyze Vertical</button>
-  </div>
+        <div class="result-row">
+            <label>Wavelength:</label>
+            <span id="outWavelength">—</span>
+        </div>
 
-  <div class="card">
-    <div id="vdResults"></div>
-    <div id="vdWarnings"></div>
-    <div id="vdBoostSummary" class="boost-summary"></div>
-    <div id="vdSpecial" class="special-notes"></div>
-  </div>
-</div>
+        <div class="result-row">
+            <label>Resonant Length:</label>
+            <span id="outResonant">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>NVIS Angle:</label>
+            <span id="outNVIS">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>DX Lobe Tendency:</label>
+            <span id="outDX">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Radial Efficiency:</label>
+            <span id="outRadials">—</span>
+        </div>
+
+    </div>
+
+</section>
