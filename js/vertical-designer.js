@@ -1,124 +1,88 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const analyzeBtn = document.getElementById("vdAnalyze");
-    if (!analyzeBtn) return;
+/* ============================================================
+   vertical-designer.js — Tool Logic
+   HF Vertical Designer Project
+   ============================================================ */
 
-    analyzeBtn.addEventListener("click", () => {
+(function() {
 
-        // BASIC INPUTS
-        const mode = document.getElementById("vdMode").value;
-        const bands = Array.from(document.getElementById("vdBands").selectedOptions).map(o => o.value);
-        const type = document.getElementById("vdType").value;
-        const customLength = parseFloat(document.getElementById("vdCustomLength").value) || null;
-        const height = parseFloat(document.getElementById("vdHeight").value) || 0;
-        const ground = document.getElementById("vdGround").value;
-        const radialCount = parseInt(document.getElementById("vdRadialCount").value) || 0;
-        const radialLength = parseFloat(document.getElementById("vdRadialLength").value) || 0;
-        const radialType = document.getElementById("vdRadialType").value;
+    /* Ensure HFUtils exists */
+    if (typeof HFUtils === "undefined") {
+        console.error("HFUtils not loaded");
+        return;
+    }
 
-        // BOOST OPTIONS
-        const boostReflector = document.getElementById("vdBoostReflector").checked ? 2.5 : 0;
-        const boostDirector = document.getElementById("vdBoostDirector").checked ? 1.5 : 0;
-        const boostElevated = document.getElementById("vdBoostElevatedRadials").checked ? 1.8 : 0;
-        const boostGroundScreen = document.getElementById("vdBoostGroundScreen").checked ? 1.0 : 0;
-        const boostSaltwater = document.getElementById("vdBoostSaltwater").checked ? 5.0 : 0;
-        const boostTurbo = document.getElementById("vdBoostTurbo").checked ? 3.5 : 0;
+    /* Grab UI elements */
+    const bandEl = document.getElementById("band");
+    const heightEl = document.getElementById("height");
+    const radialsEl = document.getElementById("radials");
+    const radialLenEl = document.getElementById("radialLength");
+    const calcBtn = document.getElementById("calcVertical");
 
-        // TIME OF DAY BOOST
-        let boostTime = 0;
-        const tod = document.getElementById("vdTimeOfDay").value;
-        if (tod === "night") boostTime = 3.0;
-        if (tod === "dawn") boostTime = 6.0;
-        if (tod === "dusk") boostTime = 6.0;
+    const outWavelength = document.getElementById("outWavelength");
+    const outResonant = document.getElementById("outResonant");
+    const outNVIS = document.getElementById("outNVIS");
+    const outDX = document.getElementById("outDX");
+    const outRadials = document.getElementById("outRadials");
 
-        // FEEDLINE TYPE BOOST
-        let boostFeedline = 0;
-        const fl = document.getElementById("vdFeedlineType").value;
-        if (fl === "rg58") boostFeedline = -1.0;
-        if (fl === "rg8x") boostFeedline = 0.0;
-        if (fl === "lmr240") boostFeedline = 0.8;
-        if (fl === "lmr400") boostFeedline = 1.5;
-        if (fl === "ladder450") boostFeedline = 2.0;
-        if (fl === "ladder600") boostFeedline = 2.5;
+    if (!calcBtn) {
+        console.error("Vertical Designer UI not found");
+        return;
+    }
 
-        // SPECIAL ANTENNA TYPES
-        let specialNotes = "";
-        let specialBoost = 0;
+    /* ========================================================
+       Radial Efficiency Helper
+       ======================================================== */
+    function radialEfficiency(count, lengthFt) {
+        if (!count || !lengthFt) return "Unknown";
 
-        // PERformer
-        if (type === "performer") {
-            specialNotes += `<p><strong>PERformer Mode:</strong> Elevated resonant vertical with two tuned radials.</p>`;
-            specialNotes += `<p>Front‑to‑back: 4–6 dB when radials are 90° apart.</p>`;
-            specialNotes += `<p>Omni pattern when radials are 180° apart.</p>`;
-            specialNotes += `<p>Requires common‑mode choke at feedpoint.</p>`;
+        if (count < 4) return "Very poor";
+        if (count < 8) return "Poor";
+        if (count < 16) return "Moderate";
+        if (count < 32) return "Good";
 
-            specialBoost += 0.4;   // modeled gain
-            specialBoost += 1.8;   // elevated radials
+        return "Excellent";
+    }
 
-            if (height >= 25) {
-                specialNotes += `<p>SS25 whip detected: reduced coil inductance → higher efficiency.</p>`;
-                specialBoost += 1.5;
-            }
+    /* ========================================================
+       Main Calculation Handler
+       ======================================================== */
+    calcBtn.addEventListener("click", () => {
 
-            if (bands.includes("40m")) {
-                specialNotes += `<p>40m Mode: radials linked in series (34 ft) + loading coil.</p>`;
-                specialBoost += 1.0;
-            }
+        const band = parseFloat(bandEl.value);
+        const height = parseFloat(heightEl.value);
+        const radials = parseFloat(radialsEl.value);
+        const radialLen = parseFloat(radialLenEl.value);
+
+        if (!band || !height) {
+            outWavelength.textContent = "—";
+            outResonant.textContent = "—";
+            outNVIS.textContent = "—";
+            outDX.textContent = "—";
+            outRadials.textContent = "—";
+            return;
         }
 
-        // Dominator
-        if (type === "dominator") {
-            specialNotes += `<p><strong>Dominator Mode:</strong> Half‑wave vertical radiator (49:1 feed).</p>`;
-            specialNotes += `<p>Low takeoff angle (~25°) ideal for DX.</p>`;
-            specialNotes += `<p>Single counterpoise wire required.</p>`;
+        /* Wavelength */
+        const wl = HFUtils.wavelength(band);
+        outWavelength.textContent = `${wl.toFixed(1)} ft`;
 
-            specialBoost += 3.0; // DX low-angle
-            specialBoost += 1.0; // low reactance bonus
+        /* Resonant Length (quarter-wave) */
+        const resonant = wl / 4;
+        outResonant.textContent = `${resonant.toFixed(1)} ft`;
 
-            if (height >= 25) {
-                specialNotes += `<p>SS25 whip enables 20m half‑wave operation.</p>`;
-                specialBoost += 2.0;
-            }
-        }
+        /* NVIS Angle */
+        const nvis = HFUtils.nvisAngle(height, band);
+        outNVIS.textContent = nvis ? `${nvis}°` : "—";
 
-        // TOTAL BOOST
-        const totalBoost =
-            boostReflector +
-            boostDirector +
-            boostElevated +
-            boostGroundScreen +
-            boostSaltwater +
-            boostTurbo +
-            boostTime +
-            boostFeedline +
-            specialBoost;
+        /* DX Lobe Tendency */
+        const dx = HFUtils.dxLobes(height, resonant, band);
+        outDX.textContent = dx;
 
-        // OUTPUT
-        let results = "";
-        let warnings = "";
-        let boostSummary = "";
+        /* Radial Efficiency */
+        const eff = radialEfficiency(radials, radialLen);
+        outRadials.textContent = eff;
 
-        results += `<h3>Vertical Analysis</h3>`;
-        results += `<p><strong>Mode:</strong> ${mode}</p>`;
-        results += `<p><strong>Bands:</strong> ${bands.join(", ")}</p>`;
-        results += `<p><strong>Antenna Type:</strong> ${type}</p>`;
-        results += `<p><strong>Height:</strong> ${height} ft</p>`;
-        results += `<p><strong>Ground:</strong> ${ground}</p>`;
-        results += `<p><strong>Radials:</strong> ${radialCount} × ${radialLength} ft (${radialType})</p>`;
-
-        if (height < 8) {
-            warnings += `<p>⚠ Height is very low — efficiency reduced.</p>`;
-        }
-
-        boostSummary += `<h3>Boost Summary</h3>`;
-        boostSummary += `<p><strong>Total Gain Boost:</strong> ${totalBoost.toFixed(1)} dB</p>`;
-
-        if (specialBoost > 0) {
-            boostSummary += `<p><strong>Special Antenna Boost:</strong> +${specialBoost.toFixed(1)} dB</p>`;
-        }
-
-        document.getElementById("vdResults").innerHTML = results;
-        document.getElementById("vdWarnings").innerHTML = warnings;
-        document.getElementById("vdBoostSummary").innerHTML = boostSummary;
-        document.getElementById("vdSpecial").innerHTML = specialNotes;
     });
-});
+
+})();
+
