@@ -1,2 +1,135 @@
-document.addEventListener("DOMContentLoaded",function(){
-const view=document.getElementById("doublet-designer-view");if(!view)return;const presetSel=document.getElementById("doubletPreset");const wireLenInput=document.getElementById("doubletWireLength");const ladderLenInput=document.getElementById("doubletLadderLength");const ladderLockBtn=document.getElementById("doubletLadderLock");const ladderZSel=document.getElementById("doubletLadderZ");const balunSel=document.getElementById("doubletBalun");const heightInput=document.getElementById("doubletHeight");const bandsSel=document.getElementById("doubletBands");const analyzeBtn=document.getElementById("doubletAnalyze");const resultsDiv=document.getElementById("doubletResults");const warningsDiv=document.getElementById("doubletWarnings");let ladderLocked=true;const presets={custom:{wire:null,ladder:null,ladderZ:450,balun:"1to1"},g5rv:{wire:102,ladder:34,ladderZ:300,balun:"1to1"},zs6bkw:{wire:93,ladder:39,ladderZ:450,balun:"1to1"},"20m":{wire:33,ladder:20,ladderZ:450,balun:"1to1"},"40m":{wire:66,ladder:30,ladderZ:450,balun:"1to1"},"80m":{wire:132,ladder:40,ladderZ:450,balun:"1to1"}};function getSelectedBands(){const vals=[];for(let i=0;i<bandsSel.options.length;i++){const o=bandsSel.options[i];if(o.selected)vals.push(parseFloat(o.value));}return vals;}function classifyDoublet(wire,ladder){if(!wire||!ladder)return"info";const avoidWire=[66,102,93,135];if(avoidWire.some(a=>Math.abs(a-wire)<1))return"caution";if(ladder<15)return"borderline";return"ok";}function warningText(wire,ladder){const cls=classifyDoublet(wire,ladder);if(cls==="caution")return'<span style="color:#c00;font-weight:bold;">This wire length is strongly resonant on one or more bands. Use the matching preset ladder-line length or expect extreme impedances.</span>';if(cls==="borderline")return'<span style="color:#c90;font-weight:bold;">Very short ladder-line length may cause high transformation ratios and tuner stress.</span>';if(cls==="ok")return'<span style="color:#090;font-weight:bold;">Configuration is generally suitable for multiband doublet use with a tuner.</span>';return'<span>Select a preset or enter wire and ladder-line lengths.</span>';}function describeBands(wire,bands){if(!wire||bands.length===0)return"Select bands and ensure wire length is set.";let easy=[];let hard=[];let no=[];bands.forEach(b=>{const wl=984/b;const ratio=wire/wl;if(ratio>0.4&&ratio<1.6)easy.push(b);else if(ratio>=1.6&&ratio<3.5)hard.push(b);else no.push(b);});let out=[];if(easy.length)out.push("Good NVIS/DX mix on: "+easy.map(b=>b+"m").join(", "));if(hard.length)out.push("Usable but more complex patterns on: "+hard.map(b=>b+"m").join(", "));if(no.length)out.push("Not ideal on: "+no.map(b=>b+"m").join(", "));return out.join("<br>");}function applyPreset(){const key=presetSel.value;const p=presets[key];if(!p)return;if(p.wire!==null)wireLenInput.value=p.wire;else wireLenInput.value="";if(p.ladder!==null){ladderLenInput.value=p.ladder;ladderLocked=true;ladderLockBtn.textContent="🔒";ladderLenInput.readOnly=true;}else{ladderLenInput.value="";ladderLocked=false;ladderLockBtn.textContent="🔓";ladderLenInput.readOnly=false;}ladderZSel.value=p.ladderZ.toString();balunSel.value=p.balun;}function toggleLock(){ladderLocked=!ladderLocked;ladderLockBtn.textContent=ladderLocked?"🔒":"🔓";ladderLenInput.readOnly=ladderLocked;}function analyze(){const wire=parseFloat(wireLenInput.value);const ladder=parseFloat(ladderLenInput.value);const bands=getSelectedBands();const wtxt=warningText(wire,ladder);const btxt=describeBands(wire,bands);warningsDiv.innerHTML=wtxt;let extra=[];if(!isNaN(wire)&&!isNaN(ladder)){extra.push("Wire length: "+wire+" ft");extra.push("Ladder-line length: "+ladder+" ft");extra.push("Ladder-line Z: "+ladderZSel.value+" Ω");extra.push("Balun: "+(balunSel.value==="1to1"?"1:1 current balun":"4:1 current balun"));}if(heightInput.value){extra.push("Feedpoint height: "+heightInput.value+" ft");}resultsDiv.innerHTML=btxt+(extra.length?("<br><br>"+extra.join("<br>")):"");}presetSel.addEventListener("change",applyPreset);ladderLockBtn.addEventListener("click",toggleLock);analyzeBtn.addEventListener("click",analyze);applyPreset();});
+/* doublet-designer.js — Full Module Logic */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* DOM Elements */
+    const ddType = document.getElementById("ddType");
+    const ddWireLength = document.getElementById("ddWireLength");
+    const ddLLLength = document.getElementById("ddLLLength");
+    const ddLLZ = document.getElementById("ddLLZ");
+    const ddBalun = document.getElementById("ddBalun");
+    const ddHeight = document.getElementById("ddHeight");
+    const ddBands = document.getElementById("ddBands");
+
+    const ddAnalyze = document.getElementById("ddAnalyze");
+    const ddResults = document.getElementById("ddResults");
+    const ddWarnings = document.getElementById("ddWarnings");
+
+    /* Band → MHz */
+    const bandMHz = {
+        "80": 3.5,
+        "60": 5.3,
+        "40": 7.15,
+        "30": 10.1,
+        "20": 14.2,
+        "17": 18.1,
+        "15": 21.2,
+        "12": 24.9,
+        "10": 28.5
+    };
+
+    /* Presets */
+    const presets = {
+        g5rv:      { wire: 102, ll: 34,  z: 450 },
+        zs6bkw:    { wire: 93,  ll: 39,  z: 450 },
+        "20m":     { wire: 33,  ll: 16,  z: 450 },
+        "40m":     { wire: 66,  ll: 28,  z: 450 },
+        "80m":     { wire: 132, ll: 34,  z: 450 }
+    };
+
+    /* Apply Preset */
+    ddType.addEventListener("change", () => {
+        const t = ddType.value;
+        if (t !== "custom") {
+            ddWireLength.value = presets[t].wire;
+            ddLLLength.value = presets[t].ll;
+            ddLLZ.value = presets[t].z;
+        }
+    });
+
+    /* Feedpoint Z Model */
+    function computeFeedpointZ(freqMHz, wireFt, llFt, llZ, heightFt) {
+        const wl = HFUtils.wavelength(freqMHz) * 3.28;
+
+        const halfWave = wl / 2;
+        const wireRatio = wireFt / halfWave;
+
+        let Z = 50;
+
+        if (wireRatio < 0.8) Z = 30;
+        if (wireRatio >= 0.8 && wireRatio <= 1.2) Z = 70;
+        if (wireRatio > 1.2) Z = 120;
+
+        if (llZ === 300) Z *= 1.1;
+        if (llZ === 450) Z *= 1.3;
+        if (llZ === 600) Z *= 1.5;
+
+        const hRatio = heightFt / wl;
+        if (hRatio < 0.15) Z *= 0.8;
+        if (hRatio > 0.25) Z *= 1.2;
+
+        return Math.round(Z);
+    }
+
+    /* SWR */
+    function computeSWR(Z, Z0 = 50) {
+        const swr = (Z > Z0) ? (Z / Z0) : (Z0 / Z);
+        return swr.toFixed(2);
+    }
+
+    /* Pattern Summary */
+    function patternSummary(freqMHz, heightFt) {
+        return HFUtils.dxLobes(heightFt, 20, freqMHz);
+    }
+
+    /* Balun Notes */
+    function balunNotes(type) {
+        if (type === "1to1") return "1:1 current balun recommended for balanced doublets.";
+        if (type === "4to1") return "4:1 current balun useful for higher feedpoint impedance.";
+        if (type === "unun9to1") return "9:1 unun is not recommended for center‑fed doublets.";
+        return "";
+    }
+
+    /* Main Analysis */
+    ddAnalyze.addEventListener("click", () => {
+
+        ddResults.innerHTML = "";
+        ddWarnings.innerHTML = "";
+
+        const wireFt = parseFloat(ddWireLength.value) || 0;
+        const llFt = parseFloat(ddLLLength.value) || 0;
+        const llZ = parseInt(ddLLZ.value) || 450;
+        const balun = ddBalun.value;
+        const heightFt = parseFloat(ddHeight.value) || 0;
+
+        const selectedBands = Array.from(ddBands.selectedOptions).map(o => o.value);
+
+        if (selectedBands.length === 0) {
+            ddWarnings.innerHTML = "<span class='warning-red'>Select at least one band.</span>";
+            return;
+        }
+
+        let html = "";
+
+        selectedBands.forEach(b => {
+            const mhz = bandMHz[b];
+            const Z = computeFeedpointZ(mhz, wireFt, llFt, llZ, heightFt);
+            const swr = computeSWR(Z);
+            const pattern = patternSummary(mhz, heightFt);
+            const balunMsg = balunNotes(balun);
+
+            html += `
+                <div style="margin-bottom:20px; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                    <h3>${b}m Band</h3>
+                    <p><b>Feedpoint Impedance:</b> ${Z} Ω</p>
+                    <p><b>SWR (50Ω):</b> ${swr}</p>
+                    <p><b>Pattern:</b> ${pattern}</p>
+                    <p><b>Balun:</b> ${balunMsg}</p>
+                </div>
+            `;
+        });
+
+        ddResults.innerHTML = html;
+    });
+
+});
