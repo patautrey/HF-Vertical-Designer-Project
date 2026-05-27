@@ -1,0 +1,66 @@
+<!-- ============================================================
+     User Manual — Partial View
+     ============================================================ -->
+
+<section class="tool-header">
+    <h2>User Manual</h2>
+    <p>Complete operating guide for the HF Tools Suite.</p>
+</section>
+
+<section class="tool-body" style="flex-direction: column; max-width: 900px;">
+
+    <h3>1. Introduction</h3>
+    <p>
+        The HF Tools Suite is a browser‑based engineering environment for modeling,
+        analyzing, and exporting antenna system data. It includes tools for verticals,
+        feedlines, DX patterns, NVIS, doublets, random wires, and more.
+    </p>
+
+    <h3>2. Critical Rule</h3>
+    <p style="font-weight: bold; color: #b00000;">
+        All fields must have an entry, even if it is 0.  
+        Blank fields prevent the calculation engine from running.
+    </p>
+
+    <h3>3. Navigation</h3>
+    <p>
+        Use the left sidebar to select a tool. Each tool loads into the main panel with:
+    </p>
+    <ul>
+        <li>Input Panel (left)</li>
+        <li>Results Panel (right)</li>
+        <li>Calculate button</li>
+        <li>Download Results button</li>
+    </ul>
+
+    <h3>4. Shared Features</h3>
+    <ul>
+        <li>Unified HF math engine (wavelength, NVIS, DX, impedance)</li>
+        <li>Consistent export format with callsign header (KG5IEF)</li>
+        <li>SPA router for instant tool switching</li>
+    </ul>
+
+    <h3>5. Tool Overview</h3>
+    <ul>
+        <li><strong>Vertical Designer:</strong> Resonant length, NVIS angle, DX tendency</li>
+        <li><strong>Feedline & Matching:</strong> Loss, delivered power, transformed SWR</li>
+        <li><strong>DX Pattern Explorer:</strong> Takeoff angle, lobe classification</li>
+        <li><strong>NVIS Field Estimator:</strong> NVIS angle, coverage radius</li>
+        <li><strong>Doublet Designer:</strong> Impedance tendency, band coverage</li>
+        <li><strong>Random Wire Analyzer:</strong> Avoid lengths, match recommendations</li>
+    </ul>
+
+    <h3>6. Export System</h3>
+    <p>
+        Every tool includes a <strong>Download Results</strong> button that generates a text file:
+    </p>
+    <pre>KG5IEF - &lt;Tool Name&gt;.txt</pre>
+
+    <h3>7. Troubleshooting</h3>
+    <ul>
+        <li><strong>Calculations do not run:</strong> A field is blank → enter 0</li>
+        <li><strong>Export file empty:</strong> Run Calculate first</li>
+        <li><strong>Results show “—”:</strong> Invalid or missing numeric input</li>
+    </ul>
+
+</section>
