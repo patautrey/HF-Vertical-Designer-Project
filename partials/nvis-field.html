@@ -1,90 +1,60 @@
 <div id="nvis-field-view" class="view" style="display:none;">
 <h2>NVIS & Field Ops</h2>
 
-<label for="nvisAntennaType">Antenna Type</label>
-<select id="nvisAntennaType">
-<option value="dipole">Dipole</option>
-<option value="invV">Inverted‑V</option>
-<option value="ocf">OCF Dipole</option>
-<option value="doublet">Center‑Fed Doublet</option>
-<option value="loop">Full‑Wave Horizontal Loop (4:1)</option>
-<option value="random">Random‑Wire (NVIS Mode)</option>
-<option value="efhw">End‑Fed Half‑Wave (EFHW)</option>
-</select>
-
-<!-- Wire length -->
-<div id="nvisWireLengthBlock">
-<label for="nvisWireLength">Wire Length (ft)</label>
-<input type="number" id="nvisWireLength">
-</div>
-
-<!-- Inverted‑V leg length -->
-<div id="nvisLegLengthBlock" style="display:none;">
-<label for="nvisLegLength">Leg Length (ft)</label>
-<input type="number" id="nvisLegLength">
-</div>
-
-<!-- OCF offset -->
-<div id="nvisOffsetBlock" style="display:none;">
-<label for="nvisOffset">OCF Offset (%)</label>
-<input type="number" id="nvisOffset" value="33">
-</div>
-
-<!-- Loop shape + circumference -->
-<div id="nvisLoopBlock" style="display:none;">
-<label for="nvisLoopShape">Loop Shape</label>
-<select id="nvisLoopShape">
-<option value="square">Square Loop</option>
-<option value="delta">Delta Loop</option>
-<option value="rectangle">Rectangle Loop</option>
-</select>
-
-<label for="nvisLoopCirc">Loop Circumference (ft)</label>
-<input type="number" id="nvisLoopCirc">
-</div>
-
-<!-- Random‑wire NVIS quick mode -->
-<div id="nvisRandomBlock" style="display:none;">
-<label for="nvisRandomLength">Random‑Wire Length (ft)</label>
-<select id="nvisRandomLength">
-<option value="29">29 ft — NVIS Safe</option>
-<option value="41">41 ft — NVIS Safe</option>
-<option value="58">58 ft — NVIS Safe</option>
-<option value="custom">Custom Length…</option>
-</select>
-<div id="nvisRandomCustom" style="display:none;">
-<input type="number" id="nvisRandomCustomLength" placeholder="Enter wire length (ft)">
-</div>
-</div>
-
-<!-- Height -->
-<label for="nvisHeight">Height Above Ground (ft)</label>
-<input type="number" id="nvisHeight">
-
-<!-- Ground quality -->
-<label for="nvisGround">Ground Quality</label>
-<select id="nvisGround">
-<option value="poor">Poor Ground</option>
-<option value="average" selected>Average Ground</option>
-<option value="good">Good Ground</option>
-</select>
-
-<!-- Bands -->
-<label for="nvisBands">Bands</label>
-<select id="nvisBands" multiple>
+<!-- Band -->
+<label for="nvisBand">Band</label>
+<select id="nvisBand">
 <option value="80">80m</option>
 <option value="60">60m</option>
 <option value="40">40m</option>
-<option value="30">30m</option>
-<option value="20">20m</option>
-<option value="17">17m</option>
-<option value="15">15m</option>
-<option value="12">12m</option>
-<option value="10">10m</option>
 </select>
 
-<button id="nvisAnalyze">Analyze NVIS</button>
+<!-- Antenna Type -->
+<label for="nvisType">Antenna Type</label>
+<select id="nvisType">
+<option value="lowDipole">Low Dipole</option>
+<option value="invertedV">Inverted‑V</option>
+<option value="randomWire">Random Wire</option>
+<option value="doublet">Doublet</option>
+<option value="loop">Horizontal Loop</option>
+</select>
 
+<!-- Height -->
+<label for="nvisHeight">Antenna Height (ft)</label>
+<input type="number" id="nvisHeight" value="12">
+
+<!-- Ground Quality -->
+<label for="nvisGround">Ground Quality</label>
+<select id="nvisGround">
+<option value="poor">Poor</option>
+<option value="average" selected>Average</option>
+<option value="good">Good</option>
+</select>
+
+<!-- Deployment Context -->
+<label for="nvisContext">Deployment Context</label>
+<select id="nvisContext">
+<option value="portable">Portable / Field</option>
+<option value="fixed">Fixed Station</option>
+</select>
+
+<!-- Wire Length -->
+<label for="nvisWireLength">Wire Length (ft)</label>
+<input type="number" id="nvisWireLength" value="66">
+
+<!-- Loop Shape -->
+<label for="nvisLoopShape">Loop Shape</label>
+<select id="nvisLoopShape">
+<option value="square">Square</option>
+<option value="delta">Delta</option>
+<option value="rectangle">Rectangle</option>
+</select>
+
+<!-- Analyze Button -->
+<button id="nvisAnalyze">Evaluate NVIS</button>
+
+<!-- Results -->
 <div id="nvisResults"></div>
 <div id="nvisWarnings"></div>
+
 </div>
