@@ -1,131 +1,118 @@
-/* random-wire.js — Full Module Logic */
+/* ============================================================
+   random-wire.js — Tool Logic
+   HF Random Wire Analyzer
+   ============================================================ */
 
-document.addEventListener("DOMContentLoaded", function () {
+(function() {
 
-    /* DOM Elements */
-    const rwLength = document.getElementById("rwLength");
-    const rwTransformer = document.getElementById("rwTransformer");
-    const rwCounterpoise = document.getElementById("rwCounterpoise");
-    const rwHeight = document.getElementById("rwHeight");
-    const rwGround = document.getElementById("rwGround");
-    const rwBands = document.getElementById("rwBands");
-
-    const rwAnalyze = document.getElementById("rwAnalyze");
-    const rwResults = document.getElementById("rwResults");
-    const rwWarnings = document.getElementById("rwWarnings");
-
-    /* Band → MHz */
-    const bandMHz = {
-        "80": 3.5,
-        "60": 5.3,
-        "40": 7.15,
-        "30": 10.1,
-        "20": 14.2,
-        "17": 18.1,
-        "15": 21.2,
-        "12": 24.9,
-        "10": 28.5
-    };
-
-    /* Transformer Ratios */
-    const transformerRatio = {
-        "9to1": 9,
-        "4to1": 4,
-        "1to1": 1
-    };
-
-    /* Ground Quality Factors */
-    const groundFactor = {
-        poor: 0.7,
-        average: 1.0,
-        good: 1.2
-    };
-
-    /* Random Wire Feedpoint Z Model */
-    function computeFeedpointZ(freqMHz, wireFt, counterFt, heightFt, transformer, ground) {
-        const wl = HFUtils.wavelength(freqMHz) * 3.28;
-        const wireRatio = wireFt / wl;
-
-        let Z = 300;
-
-        if (wireRatio < 0.25) Z = 150;
-        if (wireRatio >= 0.25 && wireRatio <= 0.5) Z = 300;
-        if (wireRatio > 0.5 && wireRatio <= 1.0) Z = 600;
-        if (wireRatio > 1.0) Z = 1200;
-
-        if (counterFt < 10) Z *= 1.2;
-        if (counterFt > 20) Z *= 0.9;
-
-        const hRatio = heightFt / wl;
-        if (hRatio < 0.15) Z *= 0.8;
-        if (hRatio > 0.25) Z *= 1.1;
-
-        Z *= groundFactor[ground];
-
-        Z = Z / transformerRatio[transformer];
-
-        return Math.round(Z);
+    /* Ensure HFUtils exists */
+    if (typeof HFUtils === "undefined") {
+        console.error("HFUtils not loaded");
+        return;
     }
 
-    /* SWR */
-    function computeSWR(Z, Z0 = 50) {
-        const swr = (Z > Z0) ? (Z / Z0) : (Z0 / Z);
-        return swr.toFixed(2);
+    /* Grab UI elements */
+    const lenEl = document.getElementById("rwLength");
+    const bandsEl = document.getElementById("rwBands");
+    const calcBtn = document.getElementById("rwCalc");
+
+    const outClass = document.getElementById("rwClass");
+    const outCoverage = document.getElementById("rwCoverage");
+    const outMatch = document.getElementById("rwMatch");
+
+    if (!calcBtn) {
+        console.error("Random Wire UI not found");
+        return;
     }
 
-    /* Pattern Summary */
-    function patternSummary(freqMHz, heightFt) {
-        return HFUtils.dxLobes(heightFt, 20, freqMHz);
+    /* ========================================================
+       Avoid-Length Classification
+       ======================================================== */
+    function classifyLength(lengthFt) {
+        const avoid = [32, 64, 96, 128, 160];
+        const near = avoid.some(a => Math.abs(a - lengthFt) <= 2);
+
+        if (avoid.includes(lengthFt)) return "Avoid length (high impedance)";
+        if (near) return "Borderline (near avoid-length)";
+        if (lengthFt < 20) return "Too short for HF";
+        if (lengthFt > 200) return "Very long (may require strong tuner)";
+        return "Safe random-wire length";
     }
 
-    /* Transformer Notes */
-    function transformerNotes(type) {
-        if (type === "9to1") return "9:1 unun recommended for random wires.";
-        if (type === "4to1") return "4:1 balun usable but not ideal for random wires.";
-        if (type === "1to1") return "1:1 balun not recommended for random wires.";
-        return "";
+    /* ========================================================
+       Band Coverage Estimation
+       ======================================================== */
+    function bandCoverage(lengthFt, bands) {
+        const good = [];
+        const marginal = [];
+        const poor = [];
+
+        bands.forEach(b => {
+            const wl = HFUtils.wavelength(b);
+            const ratio = lengthFt / wl;
+
+            if (ratio > 0.15 && ratio < 0.75) good.push(b);
+            else if (ratio >= 0.75 && ratio < 1.5) marginal.push(b);
+            else poor.push(b);
+        });
+
+        return { good, marginal, poor };
     }
 
-    /* Main Analysis */
-    rwAnalyze.addEventListener("click", () => {
+    /* ========================================================
+       Matching Recommendation
+       ======================================================== */
+    function matchRecommendation(classification) {
+        if (classification.includes("Avoid")) return "Use 9:1 unun + tuner";
+        if (classification.includes("Borderline")) return "External tuner recommended";
+        if (classification.includes("Too short")) return "Not recommended";
+        if (classification.includes("Very long")) return "Balanced tuner recommended";
+        return "Internal tuner usually OK";
+    }
 
-        rwResults.innerHTML = "";
-        rwWarnings.innerHTML = "";
+    /* ========================================================
+       Main Calculation Handler
+       ======================================================== */
+    calcBtn.addEventListener("click", () => {
 
-        const wireFt = parseFloat(rwLength.value) || 0;
-        const transformer = rwTransformer.value;
-        const counterFt = parseFloat(rwCounterpoise.value) || 0;
-        const heightFt = parseFloat(rwHeight.value) || 0;
-        const ground = rwGround.value;
+        const length = parseFloat(lenEl.value);
+        const bandsRaw = bandsEl.value;
 
-        const selectedBands = Array.from(rwBands.selectedOptions).map(o => o.value);
-
-        if (selectedBands.length === 0) {
-            rwWarnings.innerHTML = "<span class='warning-red'>Select at least one band.</span>";
+        if (!length || !bandsRaw) {
+            outClass.textContent = "—";
+            outCoverage.textContent = "—";
+            outMatch.textContent = "—";
             return;
         }
 
-        let html = "";
+        /* Parse bands */
+        const bands = bandsRaw
+            .split(",")
+            .map(b => parseFloat(b.trim()))
+            .filter(b => !isNaN(b));
 
-        selectedBands.forEach(b => {
-            const mhz = bandMHz[b];
-            const Z = computeFeedpointZ(mhz, wireFt, counterFt, heightFt, transformer, ground);
-            const swr = computeSWR(Z);
-            const pattern = patternSummary(mhz, heightFt);
-            const tmsg = transformerNotes(transformer);
+        if (bands.length === 0) {
+            outCoverage.textContent = "Invalid band list";
+            return;
+        }
 
-            html += `
-                <div style="margin-bottom:20px; padding:10px; border:1px solid #ddd; border-radius:6px;">
-                    <h3>${b}m Band</h3>
-                    <p><b>Feedpoint Impedance:</b> ${Z} Ω</p>
-                    <p><b>SWR (50Ω):</b> ${swr}</p>
-                    <p><b>Pattern:</b> ${pattern}</p>
-                    <p><b>Transformer:</b> ${tmsg}</p>
-                </div>
-            `;
-        });
+        /* Classification */
+        const cls = classifyLength(length);
+        outClass.textContent = cls;
 
-        rwResults.innerHTML = html;
+        /* Band coverage */
+        const cov = bandCoverage(length, bands);
+
+        const covText =
+            `Good: ${cov.good.join(", ") || "None"} | ` +
+            `Marginal: ${cov.marginal.join(", ") || "None"} | ` +
+            `Poor: ${cov.poor.join(", ") || "None"}`;
+
+        outCoverage.textContent = covText;
+
+        /* Matching recommendation */
+        outMatch.textContent = matchRecommendation(cls);
+
     });
 
-});
+})();
