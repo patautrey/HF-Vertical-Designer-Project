@@ -5,18 +5,17 @@
 
 (function() {
 
-    /* Ensure HFUtils exists */
     if (typeof HFUtils === "undefined") {
         console.error("HFUtils not loaded");
         return;
     }
 
-    /* Grab UI elements */
     const wireEl = document.getElementById("dblWire");
     const ladderEl = document.getElementById("dblLadder");
     const zEl = document.getElementById("dblZ");
     const bandsEl = document.getElementById("dblBands");
     const calcBtn = document.getElementById("dblCalc");
+    const exportBtn = document.getElementById("dblExport");
 
     const outImpedance = document.getElementById("dblImpedance");
     const outCoverage = document.getElementById("dblCoverage");
@@ -27,9 +26,6 @@
         return;
     }
 
-    /* ========================================================
-       Band Coverage Estimation
-       ======================================================== */
     function bandCoverage(wireFt, bands) {
         const easy = [];
         const hard = [];
@@ -47,20 +43,42 @@
         return { easy, hard, no };
     }
 
-    /* ========================================================
-       Tuner Recommendation
-       ======================================================== */
     function tunerRecommendation(impedanceText) {
         if (impedanceText.includes("low")) return "Internal tuner OK";
         if (impedanceText.includes("moderate")) return "External tuner recommended";
         return "High-power balanced tuner required";
     }
 
-    /* ========================================================
-       Main Calculation Handler
-       ======================================================== */
-    calcBtn.addEventListener("click", () => {
+    function saveTextFile(filename, text) {
+        const blob = new Blob([text], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+    }
 
+    function generateText(bandsParsed) {
+        const covText = outCoverage.textContent || "";
+        return [
+            "HF Tools Suite — KG5IEF",
+            `Exported: ${new Date().toLocaleString()}`,
+            "Tool: Doublet Designer",
+            "",
+            "Inputs:",
+            `  Total Wire Length: ${wireEl.value || "—"} ft`,
+            `  Ladder Line Length: ${ladderEl.value || "—"} ft`,
+            `  Ladder Line Z: ${zEl.value || "—"} Ω`,
+            `  Bands: ${bandsParsed && bandsParsed.length ? bandsParsed.join(", ") : (bandsEl.value || "—")}`,
+            "",
+            "Results:",
+            `  Impedance Tendency: ${outImpedance.textContent}`,
+            `  Band Coverage: ${covText}`,
+            `  Recommended Tuner: ${outTuner.textContent}`,
+            ""
+        ].join("\n");
+    }
+
+    calcBtn.addEventListener("click", () => {
         const wire = parseFloat(wireEl.value);
         const ladder = parseFloat(ladderEl.value);
         const z = parseFloat(zEl.value);
@@ -73,7 +91,6 @@
             return;
         }
 
-        /* Parse bands */
         const bands = bandsRaw
             .split(",")
             .map(b => parseFloat(b.trim()))
@@ -84,11 +101,9 @@
             return;
         }
 
-        /* Impedance tendency (from HFUtils) */
         const imp = HFUtils.doubletImpedance(wire, ladder, z);
         outImpedance.textContent = imp;
 
-        /* Band coverage */
         const cov = bandCoverage(wire, bands);
 
         const covText =
@@ -98,9 +113,17 @@
 
         outCoverage.textContent = covText;
 
-        /* Tuner recommendation */
         outTuner.textContent = tunerRecommendation(imp);
-
     });
+
+    if (exportBtn) {
+        exportBtn.addEventListener("click", () => {
+            const bands = bandsEl.value
+                .split(",")
+                .map(b => parseFloat(b.trim()))
+                .filter(b => !isNaN(b));
+            saveTextFile("KG5IEF - Doublet Designer.txt", generateText(bands));
+        });
+    }
 
 })();
