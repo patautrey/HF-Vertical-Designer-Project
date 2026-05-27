@@ -1,71 +1,54 @@
 /* ============================================================
-   app.js — SPA Router + Dynamic Loader
-   HF Vertical Designer Project
+   app.js — SPA Loader & Router
+   HF Tools Suite — KG5IEF
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+(function() {
 
-    const main = document.getElementById("main");
-    const links = document.querySelectorAll("#sidebar a");
+    const mainEl = document.getElementById("main");
+    const navLinks = document.querySelectorAll("[data-view]");
 
-    /* Track currently loaded tool script */
-    let activeScript = null;
+    const routes = {
+        "welcome": "partials/welcome.html",              // optional; falls back to inline welcome if missing
+        "vertical-designer": "partials/vertical-designer.html",
+        "feedline-matching": "partials/feedline-matching.html",
+        "dx-patterns": "partials/dx-patterns.html",
+        "nvis-field": "partials/nvis-field.html",
+        "doublet-designer": "partials/doublet-designer.html",
+        "random-wire": "partials/random-wire.html",
+        "user-manual": "partials/user-manual.html",
+        "quick-start": "partials/quick-start.html"
+    };
 
-    /* ========================================================
-       Load Partial HTML
-       ======================================================== */
-    async function loadView(viewName) {
-        const url = `partials/${viewName}.html`;
+    function loadView(view) {
+        const url = routes[view];
+        if (!url) return;
 
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                main.innerHTML = `<p>Error loading view: ${viewName}</p>`;
-                return;
-            }
-
-            const html = await response.text();
-            main.innerHTML = html;
-
-        } catch (err) {
-            main.innerHTML = `<p>Failed to load view: ${viewName}</p>`;
-        }
+        fetch(url + "?v=1")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to load view");
+                return res.text();
+            })
+            .then(html => {
+                mainEl.innerHTML = html;
+            })
+            .catch(err => {
+                console.error(err);
+                mainEl.innerHTML = `
+                    <section class="tool-header">
+                        <h2>Error</h2>
+                        <p>Unable to load view: ${view}</p>
+                    </section>
+                `;
+            });
     }
 
-    /* ========================================================
-       Load Tool Script Dynamically
-       ======================================================== */
-    function loadToolScript(viewName) {
-
-        /* Remove old script if present */
-        if (activeScript) {
-            activeScript.remove();
-            activeScript = null;
-        }
-
-        /* Build script path */
-        const script = document.createElement("script");
-        script.src = `js/${viewName}.js?v=1`;
-        script.type = "text/javascript";
-
-        /* Attach */
-        document.body.appendChild(script);
-        activeScript = script;
-    }
-
-    /* ========================================================
-       Handle Sidebar Clicks
-       ======================================================== */
-    links.forEach(link => {
-        link.addEventListener("click", evt => {
-            evt.preventDefault();
-
-            const view = link.dataset.view;
-            if (!view) return;
-
+    navLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const view = link.getAttribute("data-view");
             loadView(view);
-            loadToolScript(view);
         });
     });
 
-});
+})();
