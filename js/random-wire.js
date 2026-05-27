@@ -5,16 +5,15 @@
 
 (function() {
 
-    /* Ensure HFUtils exists */
     if (typeof HFUtils === "undefined") {
         console.error("HFUtils not loaded");
         return;
     }
 
-    /* Grab UI elements */
     const lenEl = document.getElementById("rwLength");
     const bandsEl = document.getElementById("rwBands");
     const calcBtn = document.getElementById("rwCalc");
+    const exportBtn = document.getElementById("rwExport");
 
     const outClass = document.getElementById("rwClass");
     const outCoverage = document.getElementById("rwCoverage");
@@ -25,9 +24,6 @@
         return;
     }
 
-    /* ========================================================
-       Avoid-Length Classification
-       ======================================================== */
     function classifyLength(lengthFt) {
         const avoid = [32, 64, 96, 128, 160];
         const near = avoid.some(a => Math.abs(a - lengthFt) <= 2);
@@ -39,9 +35,6 @@
         return "Safe random-wire length";
     }
 
-    /* ========================================================
-       Band Coverage Estimation
-       ======================================================== */
     function bandCoverage(lengthFt, bands) {
         const good = [];
         const marginal = [];
@@ -59,9 +52,6 @@
         return { good, marginal, poor };
     }
 
-    /* ========================================================
-       Matching Recommendation
-       ======================================================== */
     function matchRecommendation(classification) {
         if (classification.includes("Avoid")) return "Use 9:1 unun + tuner";
         if (classification.includes("Borderline")) return "External tuner recommended";
@@ -70,11 +60,34 @@
         return "Internal tuner usually OK";
     }
 
-    /* ========================================================
-       Main Calculation Handler
-       ======================================================== */
-    calcBtn.addEventListener("click", () => {
+    function saveTextFile(filename, text) {
+        const blob = new Blob([text], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+    }
 
+    function generateText(bandsParsed) {
+        const covText = outCoverage.textContent || "";
+        return [
+            "HF Tools Suite — KG5IEF",
+            `Exported: ${new Date().toLocaleString()}`,
+            "Tool: Random Wire Analyzer",
+            "",
+            "Inputs:",
+            `  Wire Length: ${lenEl.value || "—"} ft`,
+            `  Bands: ${bandsParsed && bandsParsed.length ? bandsParsed.join(", ") : (bandsEl.value || "—")}`,
+            "",
+            "Results:",
+            `  Avoid-Length Classification: ${outClass.textContent}`,
+            `  Band Coverage: ${covText}`,
+            `  Recommended Match: ${outMatch.textContent}`,
+            ""
+        ].join("\n");
+    }
+
+    calcBtn.addEventListener("click", () => {
         const length = parseFloat(lenEl.value);
         const bandsRaw = bandsEl.value;
 
@@ -85,7 +98,6 @@
             return;
         }
 
-        /* Parse bands */
         const bands = bandsRaw
             .split(",")
             .map(b => parseFloat(b.trim()))
@@ -96,11 +108,9 @@
             return;
         }
 
-        /* Classification */
         const cls = classifyLength(length);
         outClass.textContent = cls;
 
-        /* Band coverage */
         const cov = bandCoverage(length, bands);
 
         const covText =
@@ -110,9 +120,17 @@
 
         outCoverage.textContent = covText;
 
-        /* Matching recommendation */
         outMatch.textContent = matchRecommendation(cls);
-
     });
+
+    if (exportBtn) {
+        exportBtn.addEventListener("click", () => {
+            const bands = bandsEl.value
+                .split(",")
+                .map(b => parseFloat(b.trim()))
+                .filter(b => !isNaN(b));
+            saveTextFile("KG5IEF - Random Wire Analyzer.txt", generateText(bands));
+        });
+    }
 
 })();
