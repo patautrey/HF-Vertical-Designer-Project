@@ -1,6 +1,6 @@
 // /js/app.js
 // ------------------------------------------------------------
-// SPA ROUTER WITH DYNAMIC SCRIPT LOADING
+// SPA ROUTER WITH DYNAMIC SCRIPT LOADING + LIVE SIDEBAR BINDING
 // ------------------------------------------------------------
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -65,12 +65,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Attach click handlers to sidebar links
-    document.querySelectorAll("[data-view]").forEach(link => {
-        link.addEventListener("click", event => {
-            event.preventDefault();
-            const view = link.getAttribute("data-view");
-            loadView(view);
+    function bindSidebarLinks() {
+        document.querySelectorAll("[data-view]").forEach(link => {
+            link.onclick = event => {
+                event.preventDefault();
+                const view = link.getAttribute("data-view");
+                loadView(view);
+            };
         });
-    });
+    }
+
+    // Bind immediately (in case sidebar is already present)
+    bindSidebarLinks();
+
+    // Watch for DOM changes (sidebar injected later)
+    const observer = new MutationObserver(bindSidebarLinks);
+    observer.observe(document.body, { childList: true, subtree: true });
 
 });
