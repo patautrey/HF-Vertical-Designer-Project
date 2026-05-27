@@ -5,18 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HF Vertical Designer Project</title>
 
-    <!-- Core Styles -->
+    <!-- ============================================================
+         GLOBAL STYLES
+         ============================================================ -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
+    <!-- ============================================================
+         APP WRAPPER
+         ============================================================ -->
     <div id="app">
 
-        <!-- SIDEBAR -->
+        <!-- ========================================================
+             SIDEBAR NAVIGATION
+             ======================================================== -->
         <aside id="sidebar">
-            <h2>HF Tools</h2>
-            <nav>
+            <header class="sidebar-header">
+                <h1>HF Tools Suite</h1>
+            </header>
+
+            <nav class="sidebar-nav">
                 <ul>
                     <li><a href="#" data-view="vertical-designer">Vertical Designer</a></li>
                     <li><a href="#" data-view="feedline-matching">Feedline & Matching</a></li>
@@ -26,18 +36,47 @@
                     <li><a href="#" data-view="random-wire">Random Wire</a></li>
                 </ul>
             </nav>
+
+            <footer class="sidebar-footer">
+                <p>KG5IEF • HF Engineering Tools</p>
+            </footer>
         </aside>
 
-        <!-- MAIN CONTENT -->
+        <!-- ========================================================
+             MAIN CONTENT AREA
+             ======================================================== -->
         <main id="main">
-            <h2>HF Vertical Designer Project</h2>
-            <p>Select a tool from the left to begin.</p>
+
+            <!-- Default landing content -->
+            <section class="welcome">
+                <h2>HF Vertical Designer Project</h2>
+                <p>Select a tool from the left to begin.</p>
+
+                <div class="welcome-info">
+                    <p>This suite includes:</p>
+                    <ul>
+                        <li>Vertical Designer</li>
+                        <li>Feedline & Matching Calculator</li>
+                        <li>DX Pattern Explorer</li>
+                        <li>NVIS Field Estimator</li>
+                        <li>Doublet Designer</li>
+                        <li>Random Wire Analyzer</li>
+                    </ul>
+                </div>
+            </section>
+
         </main>
 
     </div>
 
-    <!-- CORE SCRIPTS -->
+    <!-- ============================================================
+         CORE SCRIPT ENGINE
+         ============================================================ -->
+
+    <!-- HF Math Engine -->
     <script src="js/utils.js?v=1"></script>
+
+    <!-- SPA Router + Dynamic Loader -->
     <script src="js/app.js?v=1"></script>
 
 </body>
