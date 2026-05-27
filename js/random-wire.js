@@ -1,2 +1,131 @@
-document.addEventListener("DOMContentLoaded",function(){
-const rwView=document.getElementById("random-wire-view");if(!rwView)return;const rwFieldMode=document.getElementById("rwFieldMode");const rwLengthSelect=document.getElementById("rwLengthSelect");const rwCustomLengthContainer=document.getElementById("rwCustomLengthContainer");const rwCustomLength=document.getElementById("rwCustomLength");const rwBands=document.getElementById("rwBands");const rwRecommend=document.getElementById("rwRecommend");const rwAnalyze=document.getElementById("rwAnalyze");const rwResults=document.getElementById("rwResults");const rwWarnings=document.getElementById("rwWarnings");const safeLengths=[29,35.5,41,58,71,84,107,124];const fieldModeLengths=[29,41,58];const avoidLengths=[16,32,44,55,88,110];function getSelectedBands(){const vals=[];for(let i=0;i<rwBands.options.length;i++){const o=rwBands.options[i];if(o.selected)vals.push(parseFloat(o.value));}return vals;}function classifyLength(len){if(avoidLengths.some(a=>Math.abs(a-len)<0.5))return"avoid";if(!safeLengths.some(s=>Math.abs(s-len)<0.5))return"borderline";return"safe";}function describeBands(len,bands){if(bands.length===0)return"Select one or more target bands.";let easy=[];let hard=[];let no=[];bands.forEach(b=>{const wl=984/b;const ratio=len/wl;if(ratio>0.2&&ratio<1.5)easy.push(b);else if(ratio>=1.5&&ratio<3)hard.push(b);else no.push(b);});let out=[];if(easy.length)out.push("Easier to tune on: "+easy.map(b=>b+"m").join(", "));if(hard.length)out.push("May be harder to tune on: "+hard.map(b=>b+"m").join(", "));if(no.length)out.push("Not recommended on: "+no.map(b=>b+"m").join(", "));return out.join("<br>");}function warningText(len){const cls=classifyLength(len);if(cls==="avoid")return'<span style="color:#c00;font-weight:bold;">Avoid length: high‑Q resonance likely on multiple bands.</span>';if(cls==="borderline")return'<span style="color:#c90;font-weight:bold;">Borderline length: tuner may struggle on some bands.</span>';return'<span style="color:#090;font-weight:bold;">Recommended length: generally tuner‑friendly across HF.</span>';}function getCurrentLength(){let val=rwLengthSelect.value;if(val==="custom"){const n=parseFloat(rwCustomLength.value);return isNaN(n)?null:n;}return parseFloat(val);}function applyFieldMode(){if(rwFieldMode.checked){rwLengthSelect.innerHTML="";fieldModeLengths.forEach(l=>{const opt=document.createElement("option");opt.value=l;opt.textContent=l+" ft — Field Safe";rwLengthSelect.appendChild(opt);});const optCustom=document.createElement("option");optCustom.value="custom";optCustom.textContent="Custom Length…";rwLengthSelect.appendChild(optCustom);}else{rwLengthSelect.innerHTML="";const opts=[29,35.5,41,58,71,84,107,124];opts.forEach(l=>{const opt=document.createElement("option");opt.value=l;opt.textContent=l+" ft — Safe";rwLengthSelect.appendChild(opt);});const optCustom=document.createElement("option");optCustom.value="custom";optCustom.textContent="Custom Length…";rwLengthSelect.appendChild(optCustom);}rwCustomLengthContainer.style.display=rwLengthSelect.value==="custom"?"block":"none";}function recommendLength(){const bands=getSelectedBands();if(bands.length===0){rwWarnings.innerHTML='<span style="color:#c00;">Select at least one band before requesting a recommendation.</span>';return;}let best=null;let bestScore=-1;safeLengths.forEach(len=>{let score=0;bands.forEach(b=>{const wl=984/b;const ratio=len/wl;if(ratio>0.2&&ratio<1.5)score+=2;else if(ratio>=1.5&&ratio<3)score+=1;});if(score>bestScore){bestScore=score;best=len;}});if(best===null){rwWarnings.innerHTML='<span style="color:#c00;">No suitable length found for the selected bands.</span>';return;}for(let i=0;i<rwLengthSelect.options.length;i++){if(parseFloat(rwLengthSelect.options[i].value)===best){rwLengthSelect.selectedIndex=i;break;}}rwCustomLengthContainer.style.display="none";rwWarnings.innerHTML='<span style="color:#090;">Recommended length selected: '+best+' ft.</span>';}function analyze(){const len=getCurrentLength();if(len===null){rwWarnings.innerHTML='<span style="color:#c00;">Enter a valid wire length.</span>';rwResults.innerHTML="";return;}const bands=getSelectedBands();const wtxt=warningText(len);const btxt=describeBands(len,bands);rwWarnings.innerHTML=wtxt;rwResults.innerHTML=btxt;}rwFieldMode.addEventListener("change",applyFieldMode);rwLengthSelect.addEventListener("change",function(){rwCustomLengthContainer.style.display=rwLengthSelect.value==="custom"?"block":"none";});rwRecommend.addEventListener("click",recommendLength);rwAnalyze.addEventListener("click",analyze);applyFieldMode();});
+/* random-wire.js — Full Module Logic */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* DOM Elements */
+    const rwLength = document.getElementById("rwLength");
+    const rwTransformer = document.getElementById("rwTransformer");
+    const rwCounterpoise = document.getElementById("rwCounterpoise");
+    const rwHeight = document.getElementById("rwHeight");
+    const rwGround = document.getElementById("rwGround");
+    const rwBands = document.getElementById("rwBands");
+
+    const rwAnalyze = document.getElementById("rwAnalyze");
+    const rwResults = document.getElementById("rwResults");
+    const rwWarnings = document.getElementById("rwWarnings");
+
+    /* Band → MHz */
+    const bandMHz = {
+        "80": 3.5,
+        "60": 5.3,
+        "40": 7.15,
+        "30": 10.1,
+        "20": 14.2,
+        "17": 18.1,
+        "15": 21.2,
+        "12": 24.9,
+        "10": 28.5
+    };
+
+    /* Transformer Ratios */
+    const transformerRatio = {
+        "9to1": 9,
+        "4to1": 4,
+        "1to1": 1
+    };
+
+    /* Ground Quality Factors */
+    const groundFactor = {
+        poor: 0.7,
+        average: 1.0,
+        good: 1.2
+    };
+
+    /* Random Wire Feedpoint Z Model */
+    function computeFeedpointZ(freqMHz, wireFt, counterFt, heightFt, transformer, ground) {
+        const wl = HFUtils.wavelength(freqMHz) * 3.28;
+        const wireRatio = wireFt / wl;
+
+        let Z = 300;
+
+        if (wireRatio < 0.25) Z = 150;
+        if (wireRatio >= 0.25 && wireRatio <= 0.5) Z = 300;
+        if (wireRatio > 0.5 && wireRatio <= 1.0) Z = 600;
+        if (wireRatio > 1.0) Z = 1200;
+
+        if (counterFt < 10) Z *= 1.2;
+        if (counterFt > 20) Z *= 0.9;
+
+        const hRatio = heightFt / wl;
+        if (hRatio < 0.15) Z *= 0.8;
+        if (hRatio > 0.25) Z *= 1.1;
+
+        Z *= groundFactor[ground];
+
+        Z = Z / transformerRatio[transformer];
+
+        return Math.round(Z);
+    }
+
+    /* SWR */
+    function computeSWR(Z, Z0 = 50) {
+        const swr = (Z > Z0) ? (Z / Z0) : (Z0 / Z);
+        return swr.toFixed(2);
+    }
+
+    /* Pattern Summary */
+    function patternSummary(freqMHz, heightFt) {
+        return HFUtils.dxLobes(heightFt, 20, freqMHz);
+    }
+
+    /* Transformer Notes */
+    function transformerNotes(type) {
+        if (type === "9to1") return "9:1 unun recommended for random wires.";
+        if (type === "4to1") return "4:1 balun usable but not ideal for random wires.";
+        if (type === "1to1") return "1:1 balun not recommended for random wires.";
+        return "";
+    }
+
+    /* Main Analysis */
+    rwAnalyze.addEventListener("click", () => {
+
+        rwResults.innerHTML = "";
+        rwWarnings.innerHTML = "";
+
+        const wireFt = parseFloat(rwLength.value) || 0;
+        const transformer = rwTransformer.value;
+        const counterFt = parseFloat(rwCounterpoise.value) || 0;
+        const heightFt = parseFloat(rwHeight.value) || 0;
+        const ground = rwGround.value;
+
+        const selectedBands = Array.from(rwBands.selectedOptions).map(o => o.value);
+
+        if (selectedBands.length === 0) {
+            rwWarnings.innerHTML = "<span class='warning-red'>Select at least one band.</span>";
+            return;
+        }
+
+        let html = "";
+
+        selectedBands.forEach(b => {
+            const mhz = bandMHz[b];
+            const Z = computeFeedpointZ(mhz, wireFt, counterFt, heightFt, transformer, ground);
+            const swr = computeSWR(Z);
+            const pattern = patternSummary(mhz, heightFt);
+            const tmsg = transformerNotes(transformer);
+
+            html += `
+                <div style="margin-bottom:20px; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                    <h3>${b}m Band</h3>
+                    <p><b>Feedpoint Impedance:</b> ${Z} Ω</p>
+                    <p><b>SWR (50Ω):</b> ${swr}</p>
+                    <p><b>Pattern:</b> ${pattern}</p>
+                    <p><b>Transformer:</b> ${tmsg}</p>
+                </div>
+            `;
+        });
+
+        rwResults.innerHTML = html;
+    });
+
+});
