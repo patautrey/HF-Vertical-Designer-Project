@@ -1,122 +1,60 @@
-/* /css/style.css */
-
-/* Base layout */
-
 body {
   margin: 0;
-  background: #020617;
-  color: #e5e7eb;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #ffffff;
+  color: #222;
+  font-family: Arial, sans-serif;
 }
 
 .view {
-  padding: 16px;
-}
-
-h1, h2, h3, h4 {
-  color: #f9fafb;
-  margin-top: 0;
+  padding: 20px;
 }
 
 .card {
-  background: #020617;
-  border: 1px solid #1f2937;
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-bottom: 20px;
   border-radius: 6px;
-  padding: 12px 14px;
-  margin-bottom: 14px;
 }
-
-/* Form controls */
 
 label {
   display: block;
   margin-top: 10px;
-  margin-bottom: 4px;
-  color: #e5e7eb;
-  font-size: 14px;
+  font-weight: bold;
 }
 
-input[type="number"],
-input[type="text"],
-select {
+input, select {
   width: 100%;
-  padding: 6px 8px;
+  padding: 6px;
+  margin-top: 4px;
+  border: 1px solid #aaa;
   border-radius: 4px;
-  border: 1px solid #374151;
-  background: #020617;
-  color: #e5e7eb;
-  font-size: 14px;
-  box-sizing: border-box;
 }
-
-input:focus,
-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 1px #3b82f6;
-}
-
-/* Buttons */
 
 button {
   margin-top: 16px;
   padding: 10px 16px;
   background: #2563eb;
-  color: #f9fafb;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 15px;
-  transition: background 0.15s ease, transform 0.05s ease;
 }
 
 button:hover {
   background: #1d4ed8;
 }
 
-button:active {
-  transform: scale(0.98);
-}
-
-/* Boost UI */
-
 .boost-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 8px 12px;
-  margin-top: 12px;
-  margin-bottom: 12px;
 }
 
-.boost-summary {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border: 1px solid #1f2937;
-  border-radius: 6px;
-  background: #0f172a;
-  color: #e5e7eb;
-}
-
-/* Special notes */
-
-.special-notes {
-  margin-top: 12px;
+.boost-summary, .special-notes {
+  background: #fff;
+  border: 1px solid #ccc;
   padding: 12px;
-  background: #0f172a;
-  border: 1px solid #1f2937;
+  margin-top: 12px;
   border-radius: 6px;
-  color: #e5e7eb;
-}
-
-/* Results / warnings */
-
-#vdResults p,
-#vdWarnings p,
-#vdBoostSummary p,
-#vdSpecial p {
-  margin: 4px 0;
-}
-
-#vdWarnings p {
-  color: #f97316;
 }
