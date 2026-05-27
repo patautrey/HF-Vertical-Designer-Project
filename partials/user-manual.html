@@ -13,18 +13,18 @@
     <p>
         The HF Tools Suite is a browser‑based engineering environment for modeling,
         analyzing, and exporting antenna system data. It includes tools for verticals,
-        feedlines, DX patterns, NVIS, doublets, random wires, and more.
+        feedlines, DX patterns, NVIS, doublets, and random wires.
     </p>
 
     <h3>2. Critical Rule</h3>
     <p style="font-weight: bold; color: #b00000;">
-        All fields must have an entry, even if it is 0.  
+        All fields must have an entry, even if it is 0.<br>
         Blank fields prevent the calculation engine from running.
     </p>
 
     <h3>3. Navigation</h3>
     <p>
-        Use the left sidebar to select a tool. Each tool loads into the main panel with:
+        Use the left sidebar to select a tool or documentation page. Each tool loads into the main panel with:
     </p>
     <ul>
         <li>Input Panel (left)</li>
@@ -43,11 +43,11 @@
     <h3>5. Tool Overview</h3>
     <ul>
         <li><strong>Vertical Designer:</strong> Resonant length, NVIS angle, DX tendency</li>
-        <li><strong>Feedline & Matching:</strong> Loss, delivered power, transformed SWR</li>
-        <li><strong>DX Pattern Explorer:</strong> Takeoff angle, lobe classification</li>
-        <li><strong>NVIS Field Estimator:</strong> NVIS angle, coverage radius</li>
-        <li><strong>Doublet Designer:</strong> Impedance tendency, band coverage</li>
-        <li><strong>Random Wire Analyzer:</strong> Avoid lengths, match recommendations</li>
+        <li><strong>Feedline &amp; Matching:</strong> Loss, delivered power, transformed SWR</li>
+        <li><strong>DX Pattern Explorer:</strong> Takeoff angle, lobe classification, DX potential</li>
+        <li><strong>NVIS Field Estimator:</strong> NVIS angle, coverage radius, suitability</li>
+        <li><strong>Doublet Designer:</strong> Impedance tendency, band coverage, tuner recommendation</li>
+        <li><strong>Random Wire Analyzer:</strong> Avoid lengths, band coverage, match recommendation</li>
     </ul>
 
     <h3>6. Export System</h3>
@@ -55,12 +55,15 @@
         Every tool includes a <strong>Download Results</strong> button that generates a text file:
     </p>
     <pre>KG5IEF - &lt;Tool Name&gt;.txt</pre>
+    <p>
+        Each file contains your callsign header, timestamp, inputs, and computed results.
+    </p>
 
     <h3>7. Troubleshooting</h3>
     <ul>
-        <li><strong>Calculations do not run:</strong> A field is blank → enter 0</li>
-        <li><strong>Export file empty:</strong> Run Calculate first</li>
-        <li><strong>Results show “—”:</strong> Invalid or missing numeric input</li>
+        <li><strong>Calculations do not run:</strong> One or more fields are blank → enter 0 in every field.</li>
+        <li><strong>Export file is empty:</strong> Press <strong>Calculate</strong> before <strong>Download Results</strong>.</li>
+        <li><strong>Results show “—”:</strong> Check for invalid or missing numeric input.</li>
     </ul>
 
 </section>
