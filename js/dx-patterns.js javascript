@@ -1,0 +1,113 @@
+/* dx-patterns.js — Full Module Logic */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* DOM Elements */
+    const dxFreq = document.getElementById("dxFreq");
+    const dxHeight = document.getElementById("dxHeight");
+    const dxAntennaType = document.getElementById("dxAntennaType");
+    const dxGround = document.getElementById("dxGround");
+    const dxMode = document.getElementById("dxMode");
+
+    const dxAnalyze = document.getElementById("dxAnalyze");
+    const dxResults = document.getElementById("dxResults");
+    const dxWarnings = document.getElementById("dxWarnings");
+
+    /* Antenna Gain Baselines */
+    const antennaGain = {
+        vertical: 1.5,
+        dipole: 2.1,
+        invertedV: 1.8,
+        efhw: 2.0,
+        loop: 2.5,
+        yagi: 6.0
+    };
+
+    /* Ground Quality Factors */
+    const groundFactor = {
+        poor: 0.7,
+        average: 1.0,
+        good: 1.2
+    };
+
+    /* Elevation Pattern Model */
+    function elevationPattern(freqMHz, heightFt, type, ground) {
+        const wl = HFUtils.wavelength(freqMHz) * 3.28;
+        const hRatio = heightFt / wl;
+
+        let peakAngle = 25;
+
+        if (type === "vertical") peakAngle = 18;
+        if (type === "dipole") peakAngle = 28;
+        if (type === "invertedV") peakAngle = 33;
+        if (type === "efhw") peakAngle = 30;
+        if (type === "loop") peakAngle = 40;
+        if (type === "yagi") peakAngle = 12;
+
+        if (hRatio < 0.15) peakAngle += 10;
+        if (hRatio > 0.25) peakAngle -= 5;
+
+        peakAngle = Math.max(5, Math.min(60, peakAngle));
+
+        return `Peak radiation at ~${peakAngle}° elevation`;
+    }
+
+    /* Azimuth Pattern Model */
+    function azimuthPattern(type) {
+        if (type === "vertical") return "Omnidirectional pattern";
+        if (type === "dipole") return "Figure‑8 broadside pattern";
+        if (type === "invertedV") return "Smoothed figure‑8 pattern";
+        if (type === "efhw") return "Directional with broadside emphasis";
+        if (type === "loop") return "Mildly directional loop pattern";
+        if (type === "yagi") return "Highly directional forward gain";
+        return "Pattern unavailable";
+    }
+
+    /* DX Score */
+    function dxScore(freqMHz, heightFt, type, ground) {
+        const base = antennaGain[type] || 1.0;
+        const g = groundFactor[ground] || 1.0;
+
+        const wl = HFUtils.wavelength(freqMHz) * 3.28;
+        const hRatio = heightFt / wl;
+
+        let heightBonus = 1.0;
+        if (hRatio > 0.25) heightBonus = 1.2;
+        if (hRatio > 0.5) heightBonus = 1.4;
+
+        const score = base * g * heightBonus;
+        return score.toFixed(2);
+    }
+
+    /* Main Analysis */
+    dxAnalyze.addEventListener("click", () => {
+
+        dxResults.innerHTML = "";
+        dxWarnings.innerHTML = "";
+
+        const freq = parseFloat(dxFreq.value) || 0;
+        const height = parseFloat(dxHeight.value) || 0;
+        const type = dxAntennaType.value;
+        const ground = dxGround.value;
+        const mode = dxMode.value;
+
+        let html = `<div style="padding:10px; border:1px solid #ccc; border-radius:6px;">`;
+
+        if (mode === "elevation") {
+            html += `<p><b>Elevation Pattern:</b> ${elevationPattern(freq, height, type, ground)}</p>`;
+        }
+
+        if (mode === "azimuth") {
+            html += `<p><b>Azimuth Pattern:</b> ${azimuthPattern(type)}</p>`;
+        }
+
+        if (mode === "dxScore") {
+            html += `<p><b>DX Score:</b> ${dxScore(freq, height, type, ground)}</p>`;
+        }
+
+        html += `</div>`;
+
+        dxResults.innerHTML = html;
+    });
+
+});
