@@ -1,60 +1,65 @@
-<div id="nvis-field-view" class="view" style="display:none;">
-<h2>NVIS & Field Ops</h2>
+<!-- ============================================================
+     NVIS Field — Partial View
+     ============================================================ -->
 
-<!-- Band -->
-<label for="nvisBand">Band</label>
-<select id="nvisBand">
-<option value="80">80m</option>
-<option value="60">60m</option>
-<option value="40">40m</option>
-</select>
+<section class="tool-header">
+    <h2>NVIS Field Estimator</h2>
+    <p>Evaluate NVIS suitability, takeoff angle, and regional HF coverage.</p>
+</section>
 
-<!-- Antenna Type -->
-<label for="nvisType">Antenna Type</label>
-<select id="nvisType">
-<option value="lowDipole">Low Dipole</option>
-<option value="invertedV">Inverted‑V</option>
-<option value="randomWire">Random Wire</option>
-<option value="doublet">Doublet</option>
-<option value="loop">Horizontal Loop</option>
-</select>
+<section class="tool-body">
 
-<!-- Height -->
-<label for="nvisHeight">Antenna Height (ft)</label>
-<input type="number" id="nvisHeight" value="12">
+    <!-- INPUT PANEL -->
+    <div class="input-panel">
 
-<!-- Ground Quality -->
-<label for="nvisGround">Ground Quality</label>
-<select id="nvisGround">
-<option value="poor">Poor</option>
-<option value="average" selected>Average</option>
-<option value="good">Good</option>
-</select>
+        <div class="input-row">
+            <label for="nvisFreq">Frequency (MHz):</label>
+            <input type="number" id="nvisFreq" placeholder="e.g., 5.3">
+        </div>
 
-<!-- Deployment Context -->
-<label for="nvisContext">Deployment Context</label>
-<select id="nvisContext">
-<option value="portable">Portable / Field</option>
-<option value="fixed">Fixed Station</option>
-</select>
+        <div class="input-row">
+            <label for="nvisHeight">Antenna Height (ft):</label>
+            <input type="number" id="nvisHeight" placeholder="e.g., 12">
+        </div>
 
-<!-- Wire Length -->
-<label for="nvisWireLength">Wire Length (ft)</label>
-<input type="number" id="nvisWireLength" value="66">
+        <div class="input-row">
+            <label for="nvisWire">Antenna Length (ft):</label>
+            <input type="number" id="nvisWire" placeholder="e.g., 66">
+        </div>
 
-<!-- Loop Shape -->
-<label for="nvisLoopShape">Loop Shape</label>
-<select id="nvisLoopShape">
-<option value="square">Square</option>
-<option value="delta">Delta</option>
-<option value="rectangle">Rectangle</option>
-</select>
+        <button id="nvisCalc" class="calc-btn">Analyze</button>
+    </div>
 
-<!-- Analyze Button -->
-<button id="nvisAnalyze">Evaluate NVIS</button>
+    <!-- OUTPUT PANEL -->
+    <div class="output-panel">
 
-<!-- Results -->
-<div id="nvisResults"></div>
-<div id="nvisWarnings"></div>
+        <h3>Results</h3>
 
-</div>
+        <div class="result-row">
+            <label>Wavelength:</label>
+            <span id="nvisWavelength">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Height / Wavelength Ratio:</label>
+            <span id="nvisRatio">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Estimated NVIS Angle:</label>
+            <span id="nvisAngle">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>Coverage Radius:</label>
+            <span id="nvisRadius">—</span>
+        </div>
+
+        <div class="result-row">
+            <label>NVIS Suitability:</label>
+            <span id="nvisSuitability">—</span>
+        </div>
+
+    </div>
+
+</section>
