@@ -5,117 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HF Vertical Designer Project</title>
 
-    <!-- MAIN LIGHT THEME -->
-    <link rel="stylesheet" href="css/style.css?v=20260527">
-
-    <style>
-        body {
-            margin: 0;
-            background: #ffffff;
-            color: #222;
-            font-family: Arial, sans-serif;
-        }
-
-        #app {
-            display: flex;
-            height: 100vh;
-        }
-
-        /* Sidebar */
-        #sidebar {
-            width: 240px;
-            background: #f0f0f0;
-            border-right: 1px solid #ccc;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        #sidebar h2 {
-            margin-top: 0;
-            font-size: 20px;
-        }
-
-        .nav {
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 10px;
-        }
-
-        .nav-link {
-            display: block;
-            padding: 8px 10px;
-            background: #e6e6e6;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #222;
-            font-weight: bold;
-        }
-
-        .nav-link:hover {
-            background: #dcdcdc;
-        }
-
-        /* Main content */
-        #main {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-    </style>
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<div id="app">
+    <div id="app">
 
-    <!-- SIDEBAR NAVIGATION -->
-    <div id="sidebar">
-        <h2>HF Tools</h2>
+        <!-- SIDEBAR -->
+        <aside id="sidebar">
+            <h2>HF Tools</h2>
+            <nav>
+                <ul>
+                    <li><a href="#" data-view="vertical-designer">Vertical Designer</a></li>
+                    <li><a href="#" data-view="feedline-matching">Feedline & Matching</a></li>
+                    <li><a href="#" data-view="dx-patterns">DX & Patterns</a></li>
+                    <li><a href="#" data-view="nvis-field">NVIS Field</a></li>
+                    <li><a href="#" data-view="doublet-designer">Doublet Designer</a></li>
+                    <li><a href="#" data-view="random-wire">Random Wire</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-        <ul class="nav flex-column">
+        <!-- MAIN CONTENT -->
+        <main id="main">
+            <h2>HF Vertical Designer Project</h2>
+            <p>Select a tool from the left to begin.</p>
+        </main>
 
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-view="vertical-designer">Vertical Designer</a>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-view="feedline-matching">Feedline & Matching</a>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-view="dx-patterns">DX & Patterns</a>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-view="nvis-field">NVIS & Field Ops</a>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-view="doublet-designer">Doublet Designer</a>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-view="random-wire">Random-Wire + 9:1</a>
-            </li>
-
-        </ul>
     </div>
 
-    <!-- MAIN CONTENT AREA -->
-    <div id="main">
-        <h2>Welcome</h2>
-        <p>Select a tool from the left to begin.</p>
-    </div>
-
-</div>
-
-<!-- CORE SCRIPTS ONLY -->
-<script src="js/utils.js?v=20260527"></script>
-<script src="js/app.js?v=20260527"></script>
+    <!-- CORE SCRIPTS -->
+    <script src="js/utils.js?v=1"></script>
+    <script src="js/app.js?v=1"></script>
 
 </body>
 </html>
