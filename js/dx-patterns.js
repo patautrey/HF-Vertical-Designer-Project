@@ -5,17 +5,16 @@
 
 (function() {
 
-    /* Ensure HFUtils exists */
     if (typeof HFUtils === "undefined") {
         console.error("HFUtils not loaded");
         return;
     }
 
-    /* Grab UI elements */
     const freqEl = document.getElementById("dxFreq");
     const heightEl = document.getElementById("dxHeight");
     const lengthEl = document.getElementById("dxLength");
     const calcBtn = document.getElementById("dxCalc");
+    const exportBtn = document.getElementById("dxExport");
 
     const outWavelength = document.getElementById("dxWavelength");
     const outRatio = document.getElementById("dxRatio");
@@ -28,9 +27,6 @@
         return;
     }
 
-    /* ========================================================
-       Takeoff Angle Estimation
-       ======================================================== */
     function estimateAngle(heightFt, freqMHz) {
         const wl = HFUtils.wavelength(freqMHz);
         const hRatio = heightFt / wl;
@@ -42,9 +38,6 @@
         return 20;
     }
 
-    /* ========================================================
-       Lobe Classification
-       ======================================================== */
     function classifyLobes(heightFt, lengthFt, freqMHz) {
         const wl = HFUtils.wavelength(freqMHz);
         const hRatio = heightFt / wl;
@@ -55,9 +48,6 @@
         return "Low-angle dominant, strong DX potential";
     }
 
-    /* ========================================================
-       DX Potential Rating
-       ======================================================== */
     function dxPotential(angle) {
         if (angle >= 60) return "Poor";
         if (angle >= 40) return "Moderate";
@@ -65,11 +55,36 @@
         return "Excellent";
     }
 
-    /* ========================================================
-       Main Calculation Handler
-       ======================================================== */
-    calcBtn.addEventListener("click", () => {
+    function saveTextFile(filename, text) {
+        const blob = new Blob([text], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+    }
 
+    function generateText() {
+        return [
+            "HF Tools Suite — KG5IEF",
+            `Exported: ${new Date().toLocaleString()}`,
+            "Tool: DX Pattern Explorer",
+            "",
+            "Inputs:",
+            `  Frequency: ${freqEl.value || "—"} MHz`,
+            `  Antenna Height: ${heightEl.value || "—"} ft`,
+            `  Antenna Length: ${lengthEl.value || "—"} ft`,
+            "",
+            "Results:",
+            `  Wavelength: ${outWavelength.textContent}`,
+            `  Height/Wavelength Ratio: ${outRatio.textContent}`,
+            `  Primary Takeoff Angle: ${outAngle.textContent}`,
+            `  Lobe Classification: ${outClass.textContent}`,
+            `  DX Potential: ${outPotential.textContent}`,
+            ""
+        ].join("\n");
+    }
+
+    calcBtn.addEventListener("click", () => {
         const freq = parseFloat(freqEl.value);
         const height = parseFloat(heightEl.value);
         const length = parseFloat(lengthEl.value);
@@ -83,26 +98,26 @@
             return;
         }
 
-        /* Wavelength */
         const wl = HFUtils.wavelength(freq);
         outWavelength.textContent = `${wl.toFixed(1)} ft`;
 
-        /* Height/Wavelength Ratio */
         const ratio = height / wl;
         outRatio.textContent = ratio.toFixed(2);
 
-        /* Takeoff Angle */
         const angle = estimateAngle(height, freq);
         outAngle.textContent = `${angle}°`;
 
-        /* Lobe Classification */
         const lobes = classifyLobes(height, length, freq);
         outClass.textContent = lobes;
 
-        /* DX Potential */
         const potential = dxPotential(angle);
         outPotential.textContent = potential;
-
     });
+
+    if (exportBtn) {
+        exportBtn.addEventListener("click", () => {
+            saveTextFile("KG5IEF - DX Pattern Explorer.txt", generateText());
+        });
+    }
 
 })();
